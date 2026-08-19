@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Theme Engine (Date Picker & Permanent Neon Labels/Tabs Override)
+High-Tech Cosmic Dark & Neon Glow Theme Engine (Strict Tab Fix Override)
 """
 
 import io
@@ -46,7 +46,7 @@ st.set_page_config(
 # Inject Global Theme
 inject_global_theme_css()
 
-# High-Specificity Cosmic Dark & Neon Glow CSS (Date Picker & Permanent Neon Labels/Tabs Override)
+# High-Specificity Cosmic Dark & Neon Glow CSS (Strict Tab Fix Override)
 st.markdown(
     """
     <style>
@@ -92,6 +92,77 @@ st.markdown(
     }
 
     /* =======================================================
+       3. PERMANENT BRIGHT NEON CYAN FOR ALL TAB TITLES (STRICT FIX)
+       ======================================================= */
+    /* Tab Header Container & Bar */
+    div[data-testid="stTabs"] > div[role="tablist"],
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+        background: transparent !important;
+        gap: 6px !important;
+        border-bottom: 1px solid rgba(0, 242, 254, 0.25) !important;
+    }
+
+    /* Remove default Streamlit Red Underline bar completely */
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
+        display: none !important;
+        background-color: transparent !important;
+        height: 0px !important;
+    }
+
+    /* ALL TAB BUTTONS (BASE / INACTIVE STATE) */
+    div[data-testid="stTabs"] button,
+    div[data-testid="stTabs"] button[role="tab"],
+    div[data-testid="stTabs"] [data-baseweb="tab"] {
+        background: rgba(15, 23, 42, 0.85) !important;
+        background-color: #0F172A !important;
+        border: 1px solid rgba(0, 242, 254, 0.35) !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 8px 18px !important;
+        margin: 0 !important;
+        transition: all 0.25s ease-in-out !important;
+    }
+
+    /* Force All Inactive Tab Text & Child Nodes to Bright Cyan Glow */
+    div[data-testid="stTabs"] button p,
+    div[data-testid="stTabs"] button span,
+    div[data-testid="stTabs"] button div,
+    div[data-testid="stTabs"] button * {
+        color: #38BDF8 !important;
+        font-weight: 700 !important;
+        font-size: 13.5px !important;
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.75) !important;
+    }
+
+    /* HOVER STATE */
+    div[data-testid="stTabs"] button:hover {
+        border-color: #00F2FE !important;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3) !important;
+    }
+    div[data-testid="stTabs"] button:hover * {
+        color: #00F2FE !important;
+        text-shadow: 0 0 14px rgba(0, 242, 254, 0.9) !important;
+    }
+
+    /* ACTIVE / SELECTED TAB (VIBRANT NEON GLOW & ELECTRIC UNDERLINE) */
+    div[data-testid="stTabs"] button[aria-selected="true"],
+    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
+        background-color: rgba(0, 242, 254, 0.2) !important;
+        border: 1px solid #00F2FE !important;
+        border-bottom: 3px solid #00F2FE !important;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.45) !important;
+    }
+
+    div[data-testid="stTabs"] button[aria-selected="true"] p,
+    div[data-testid="stTabs"] button[aria-selected="true"] span,
+    div[data-testid="stTabs"] button[aria-selected="true"] div,
+    div[data-testid="stTabs"] button[aria-selected="true"] * {
+        color: #FFFFFF !important;
+        text-shadow: 0 0 14px rgba(0, 242, 254, 1), 0 0 24px rgba(0, 242, 254, 0.8) !important;
+    }
+
+    /* =======================================================
        1. FIX DATE INPUT CONTAINER & PICKER BACKGROUND
        ======================================================= */
     [data-testid="stSidebar"] div[data-baseweb="input"],
@@ -127,44 +198,6 @@ st.markdown(
         font-weight: 700 !important;
         letter-spacing: 0.4px !important;
         text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
-    }
-
-    /* =======================================================
-       3. PERMANENT BRIGHT NEON CYAN FOR ALL TAB TITLES
-       ======================================================= */
-    div[data-testid="stTabs"] button[role="tab"],
-    button[data-baseweb="tab"] {
-        background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(0, 242, 254, 0.3) !important;
-        border-radius: 8px 8px 0 0 !important;
-        margin-right: 5px !important;
-        padding: 8px 16px !important;
-        transition: all 0.25s ease-in-out !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"] p,
-    div[data-testid="stTabs"] button[role="tab"] span,
-    div[data-testid="stTabs"] button[role="tab"] div,
-    button[data-baseweb="tab"] * {
-        color: #38BDF8 !important;
-        font-weight: 700 !important;
-        font-size: 13.5px !important;
-        text-shadow: 0 0 10px rgba(56, 189, 248, 0.75) !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
-    button[data-baseweb="tab"][aria-selected="true"] {
-        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
-        border: 1px solid #00F2FE !important;
-        border-bottom: 3px solid #00F2FE !important;
-        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span,
-    button[data-baseweb="tab"][aria-selected="true"] * {
-        color: #FFFFFF !important;
-        text-shadow: 0 0 14px rgba(0, 242, 254, 1) !important;
     }
 
     /* =======================================================
