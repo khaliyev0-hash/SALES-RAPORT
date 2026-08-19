@@ -1,7 +1,7 @@
 """
 Frontend Components Engine (Tier-1 Luxury SaaS Interface)
 High-Tech Cosmic Dark & Neon Glow Theme Engine
-Maximum Specificity CSS for Streamlit Cloud & Localhost Parity
+Sidebar Selectbox & MultiSelect Dropdown Fixes
 """
 
 import json
@@ -21,7 +21,7 @@ def format_currency_azn(val: float) -> str:
 
 
 def inject_global_theme_css():
-    """Injects high-priority Cosmic Dark CSS stylesheet with maximum specificity for Streamlit Cloud."""
+    """Injects high-priority Cosmic Dark CSS stylesheet with sidebar selectbox neon blue overrides."""
     st.markdown(
         """
         <style>
@@ -86,7 +86,7 @@ def inject_global_theme_css():
             font-weight: 800 !important;
         }
 
-        /* --- Permanent Glowing Tabs (Max Specificity for Cloud & Localhost) --- */
+        /* --- Permanent Glowing Tabs (Max Specificity) --- */
         button[data-baseweb="tab"],
         div[data-testid="stTabs"] button[role="tab"],
         div[data-testid="stTabs"] button {
@@ -118,22 +118,49 @@ def inject_global_theme_css():
         button[data-baseweb="tab"] *,
         div[data-testid="stTabs"] button[role="tab"] * { color: inherit !important; }
 
-        /* --- Dark Inputs, Selectboxes, DatePicker & File Uploader --- */
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="select"] div[role="combobox"],
-        div[data-baseweb="base-input"],
-        div[data-baseweb="input"],
-        .stDateInput input,
-        div[data-testid="stFileUploader"],
-        section[data-testid="stFileUploadDropzone"] {
-            background-color: #111827 !important;
-            border: 1px solid rgba(0, 242, 254, 0.25) !important;
-            color: #F8FAFC !important;
+        /* =======================================================
+           FIX SIDEBAR SELECTBOX & MULTISELECT DROPDOWN BOXES
+           ======================================================= */
+        [data-testid="stSidebar"] div[data-baseweb="select"] > div,
+        [data-testid="stSidebar"] div[data-baseweb="select"] div[role="combobox"],
+        [data-testid="stSidebar"] .stSelectbox > div > div,
+        [data-testid="stSidebar"] .stMultiSelect > div > div {
+            background-color: #101726 !important;
+            background: #101726 !important;
+            border: 1px solid rgba(0, 242, 254, 0.3) !important;
             border-radius: 8px !important;
+            color: #F8FAFC !important;
+            box-shadow: 0 0 8px rgba(0, 242, 254, 0.1) !important;
+            transition: all 0.2s ease-in-out !important;
         }
-        div[data-baseweb="select"] * { color: #F8FAFC !important; }
 
-        /* --- Glowing Buttons (Cloud & Localhost Reinforced) --- */
+        [data-testid="stSidebar"] div[data-baseweb="select"] > div:hover,
+        [data-testid="stSidebar"] div[data-baseweb="select"] > div:focus-within {
+            border-color: #00F2FE !important;
+            box-shadow: 0 0 14px rgba(0, 242, 254, 0.3) !important;
+        }
+
+        [data-testid="stSidebar"] div[data-baseweb="select"] * {
+            color: #94A3B8 !important;
+            font-size: 13.5px !important;
+        }
+
+        [data-testid="stSidebar"] div[data-baseweb="select"] svg {
+            fill: #00F2FE !important;
+            color: #00F2FE !important;
+        }
+
+        [data-testid="stSidebar"] div[data-baseweb="tag"] {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(99, 102, 241, 0.25)) !important;
+            border: 1px solid rgba(0, 242, 254, 0.5) !important;
+            border-radius: 6px !important;
+        }
+        [data-testid="stSidebar"] div[data-baseweb="tag"] span {
+            color: #00F2FE !important;
+            font-weight: 600 !important;
+        }
+
+        /* --- Glowing Buttons --- */
         .stButton > button,
         div[data-testid="stButton"] > button,
         button[kind="secondary"],

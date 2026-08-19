@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Theme Engine (Streamlit Cloud & Localhost Parity)
+High-Tech Cosmic Dark & Neon Glow Theme Engine (Sidebar Dropdowns Neon Override)
 """
 
 import io
@@ -46,7 +46,7 @@ st.set_page_config(
 # Inject Global Theme
 inject_global_theme_css()
 
-# High-Specificity Cosmic Dark & Neon Glow CSS (Streamlit Cloud & Localhost Reinforced)
+# High-Specificity Cosmic Dark & Neon Glow CSS (Sidebar Dropdowns Neon Override)
 st.markdown(
     """
     <style>
@@ -91,7 +91,7 @@ st.markdown(
         font-weight: 800 !important;
     }
 
-    /* --- Permanent Glowing Tabs (Force neon styled tabs on Cloud & Localhost) --- */
+    /* --- Permanent Glowing Tabs --- */
     button[data-baseweb="tab"],
     div[data-testid="stTabs"] button[role="tab"],
     div[data-testid="stTabs"] button {
@@ -117,22 +117,54 @@ st.markdown(
     button[data-baseweb="tab"] *,
     div[data-testid="stTabs"] button[role="tab"] * { color: inherit !important; }
 
-    /* --- Dark Inputs, Selectboxes, DatePicker & File Uploader --- */
-    div[data-baseweb="select"] > div,
-    div[data-baseweb="select"] div[role="combobox"],
-    div[data-baseweb="base-input"],
-    div[data-baseweb="input"],
-    .stDateInput input,
-    div[data-testid="stFileUploader"],
-    section[data-testid="stFileUploadDropzone"] {
-        background-color: #111827 !important;
-        border: 1px solid rgba(0, 242, 254, 0.25) !important;
-        color: #F8FAFC !important;
+    /* =======================================================
+       FIX SIDEBAR SELECTBOX & MULTISELECT DROPDOWN BOXES
+       ======================================================= */
+    /* Main container of all selectboxes and multiselects */
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div,
+    [data-testid="stSidebar"] div[data-baseweb="select"] div[role="combobox"],
+    [data-testid="stSidebar"] .stSelectbox > div > div,
+    [data-testid="stSidebar"] .stMultiSelect > div > div {
+        background-color: #101726 !important;
+        background: #101726 !important;
+        border: 1px solid rgba(0, 242, 254, 0.3) !important;
         border-radius: 8px !important;
+        color: #F8FAFC !important;
+        box-shadow: 0 0 8px rgba(0, 242, 254, 0.1) !important;
+        transition: all 0.2s ease-in-out !important;
     }
-    div[data-baseweb="select"] * { color: #F8FAFC !important; }
 
-    /* --- Force dark neon styling for all secondary/header buttons on Cloud & Localhost --- */
+    /* Hover and Focus States for Inputs */
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div:hover,
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div:focus-within {
+        border-color: #00F2FE !important;
+        box-shadow: 0 0 14px rgba(0, 242, 254, 0.3) !important;
+    }
+
+    /* Placeholder and Text color inside dropdowns ("Choose options") */
+    [data-testid="stSidebar"] div[data-baseweb="select"] * {
+        color: #94A3B8 !important;
+        font-size: 13.5px !important;
+    }
+
+    /* Dropdown arrow icon (SVG) */
+    [data-testid="stSidebar"] div[data-baseweb="select"] svg {
+        fill: #00F2FE !important;
+        color: #00F2FE !important;
+    }
+
+    /* Selected item tags/chips (Pills inside MultiSelect) */
+    [data-testid="stSidebar"] div[data-baseweb="tag"] {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(99, 102, 241, 0.25)) !important;
+        border: 1px solid rgba(0, 242, 254, 0.5) !important;
+        border-radius: 6px !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="tag"] span {
+        color: #00F2FE !important;
+        font-weight: 600 !important;
+    }
+
+    /* --- Glowing Buttons --- */
     .stButton > button,
     div[data-testid="stButton"] > button,
     button[kind="secondary"],
