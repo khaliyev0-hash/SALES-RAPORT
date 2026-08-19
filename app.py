@@ -1,22 +1,25 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-Ultra-Clean Modern Enterprise Light SaaS Theme (Apple, Stripe & Power BI Inspired)
+Pure JavaScript & ApexCharts / Apache ECharts JS Component Integration
 """
 
 import io
 import datetime
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 from queries import fetch_ty_and_ly_datasets, apply_cascading_filters, force_db_status_reset, standardize_dataframe_columns
 from frontend_components import (
     inject_global_theme_css,
     render_khayal_aliyev_branding_badge,
-    render_6_kpi_widgets_html,
-    render_apex_trend_dual_spline,
-    render_apex_store_share_donut,
-    render_apex_top_bottom_skus,
+)
+from js_components import (
+    render_neon_kpi_cards,
+    render_apex_sales_wave,
+    render_echarts_hollow_donut,
+    render_apex_horizontal_bars,
 )
 from visuals import (
     create_day_of_week_chart,
@@ -43,29 +46,106 @@ st.set_page_config(
 # Inject Global Theme
 inject_global_theme_css()
 
-# High-End Light Enterprise SaaS CSS
+# High-Specificity Cosmic Dark & Neon Glow CSS
 st.markdown(
     """
     <style>
-    /* --- Global Body & Workspace Background --- */
+    /* --- Deep Cosmic Canvas --- */
     html, body, [data-testid="stAppViewContainer"], .stApp {
-        background-color: #F1F5F9 !important;
-        background: #F1F5F9 !important;
-        color: #0F172A !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif !important;
+        background: radial-gradient(circle at 50% 0%, #0F172A 0%, #070A13 75%) !important;
+        background-color: #070A13 !important;
+        color: #F8FAFC !important;
     }
 
-    /* --- Clean White Sidebar --- */
+    /* --- Dark Frosted Sidebar --- */
     [data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
-        background-color: #FFFFFF !important;
-        border-right: 1px solid #E2E8F0 !important;
-        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03) !important;
+        background: rgba(15, 23, 42, 0.95) !important;
+        border-right: 1px solid rgba(0, 242, 254, 0.2) !important;
+        box-shadow: 10px 0 25px rgba(0, 0, 0, 0.5) !important;
     }
 
-    /* --- Remove Top Header Blank Area --- */
+    /* --- Glassmorphic Containers & Cards --- */
+    div[data-testid="stVerticalBlock"] > div:has(.metric-card),
+    .cyber-card, .metric-card,
+    div[data-testid="stMetric"],
+    .header-container {
+        background: rgba(15, 23, 42, 0.75) !important;
+        backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 14px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37) !important;
+        color: #F8FAFC !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .cyber-card:hover, .metric-card:hover {
+        transform: translateY(-3px) !important;
+        border-color: rgba(0, 242, 254, 0.4) !important;
+        box-shadow: 0 10px 25px rgba(0, 242, 254, 0.2) !important;
+    }
+
+    /* --- KPI Values & Badges --- */
+    .metric-value, [data-testid="stMetricValue"] {
+        color: #00F2FE !important;
+        text-shadow: 0 0 12px rgba(0, 242, 254, 0.6) !important;
+        font-weight: 800 !important;
+    }
+
+    /* --- Permanent Glowing Tabs --- */
+    button[data-baseweb="tab"] {
+        background: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid rgba(0, 242, 254, 0.25) !important;
+        border-radius: 8px 8px 0 0 !important;
+        color: #38BDF8 !important;
+        font-weight: 700 !important;
+        margin-right: 4px !important;
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+    }
+
+    button[data-baseweb="tab"][aria-selected="true"] {
+        background: linear-gradient(180deg, rgba(0, 242, 254, 0.25), rgba(15, 23, 42, 0.95)) !important;
+        color: #FFFFFF !important;
+        border: 1px solid #00F2FE !important;
+        border-bottom: 3px solid #00F2FE !important;
+        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
+        text-shadow: 0 0 12px rgba(0, 242, 254, 0.9) !important;
+    }
+    button[data-baseweb="tab"] * { color: inherit !important; }
+
+    /* --- Dark Inputs, Selectboxes, DatePicker & File Uploader --- */
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="select"] div[role="combobox"],
+    div[data-baseweb="base-input"],
+    div[data-baseweb="input"],
+    .stDateInput input,
+    div[data-testid="stFileUploader"],
+    section[data-testid="stFileUploadDropzone"] {
+        background-color: #111827 !important;
+        border: 1px solid rgba(0, 242, 254, 0.25) !important;
+        color: #F8FAFC !important;
+        border-radius: 8px !important;
+    }
+    div[data-baseweb="select"] * { color: #F8FAFC !important; }
+
+    /* --- Glowing Buttons --- */
+    .stButton > button, div[data-testid="stFileUploader"] button {
+        background: linear-gradient(135deg, #1E293B, #0F172A) !important;
+        color: #00F2FE !important;
+        border: 1px solid rgba(0, 242, 254, 0.4) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 0 12px rgba(0, 242, 254, 0.2) !important;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #0284C7, #0369A1) !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.5) !important;
+    }
+
+    /* Remove default Streamlit top header gap */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0rem !important;
+        z-index: -1 !important;
     }
 
     .block-container {
@@ -75,78 +155,6 @@ st.markdown(
     }
     div[data-testid="stToolbar"] {
         visibility: hidden !important;
-    }
-
-    /* --- Live System Green Badge (Light Mode) --- */
-    .live-dot {
-        width: 9px; height: 9px; background: #16A34A; border-radius: 50%;
-        display: inline-block;
-        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
-        animation: pulseLight 2s infinite;
-    }
-    @keyframes pulseLight {
-        0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
-        70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
-    }
-
-    /* --- Modern Light Tab Bar --- */
-    button[data-baseweb="tab"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 8px 8px 0 0 !important;
-        color: #475569 !important;
-        font-weight: 600 !important;
-        font-size: 13.5px !important;
-        padding: 10px 18px !important;
-        margin-right: 4px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
-    }
-    button[data-baseweb="tab"]:hover {
-        color: #2563EB !important;
-        background-color: #F8FAFC !important;
-        border-color: #CBD5E1 !important;
-    }
-    button[data-baseweb="tab"][aria-selected="true"] {
-        background-color: #EFF6FF !important;
-        color: #1D4ED8 !important;
-        border: 1px solid #BFDBFE !important;
-        border-bottom: 3px solid #2563EB !important;
-        font-weight: 700 !important;
-    }
-    button[data-baseweb="tab"] * {
-        color: inherit !important;
-    }
-
-    /* --- Crisp Light Inputs, Selectbox & Uploader --- */
-    div[data-baseweb="select"] > div,
-    div[data-baseweb="input"],
-    .stDateInput input,
-    div[data-testid="stFileUploader"],
-    section[data-testid="stFileUploadDropzone"] {
-        background-color: #F8FAFC !important;
-        border: 1px solid #CBD5E1 !important;
-        color: #0F172A !important;
-        border-radius: 8px !important;
-    }
-    div[data-baseweb="select"] * {
-        color: #0F172A !important;
-    }
-
-    /* --- Buttons (Clean Blue & Slate Accents) --- */
-    .stButton > button, button[kind="secondary"] {
-        background: #FFFFFF !important;
-        color: #0F172A !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 8px !important;
-        font-weight: 600 !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
-    }
-    .stButton > button:hover {
-        background: #2563EB !important;
-        color: #FFFFFF !important;
-        border-color: #2563EB !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
     }
     </style>
     """,
@@ -256,8 +264,8 @@ with st.sidebar:
             uploaded_skus = up_df[sku_col].astype(str).str.strip().unique().tolist()
             st.markdown(
                 f"""
-                <div style="background: #EFF6FF; border: 1px solid #BFDBFE; 
-                            padding: 8px 12px; border-radius: 6px; color: #1D4ED8; font-size: 0.76rem; font-weight: 600; margin-top: 6px;">
+                <div style="background: rgba(0, 242, 254, 0.15); border: 1px solid rgba(0, 242, 254, 0.4); 
+                            padding: 8px 12px; border-radius: 6px; color: #00f2fe; font-size: 0.76rem; font-weight: 600; margin-top: 6px;">
                     🔍 Xüsusi Siyahı Aktivdir: {len(uploaded_skus)} məhsul analiz edilir
                 </div>
                 """,
@@ -334,7 +342,7 @@ df_filtered_ty = standardize_dataframe_columns(df_filtered_ty)
 df_filtered_ly = standardize_dataframe_columns(df_filtered_ly)
 
 # ==========================================
-# CRISP LIGHT HEADER WITH TAM STORE TITLE & ALIGNED CONTROLS
+# CYBERPUNK LIVE HEADER WITH TAM STORE TITLE & ALIGNED CONTROLS
 # ==========================================
 c_hdr_title, c_hdr_badge, c_hdr_controls = st.columns([2.2, 1.3, 0.8])
 
@@ -342,13 +350,13 @@ with c_hdr_title:
     st.markdown(
         f"""
         <div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; 
-                    background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
+                    background: rgba(18, 24, 38, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;">
             <span class="live-dot"></span>
             <div>
-                <h2 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #0F172A; letter-spacing: -0.01em;">
+                <h2 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff; letter-spacing: -0.01em;">
                     Tam Store Sales Analysis Portal
                 </h2>
-                <span style="font-size: 0.72rem; color: #16A34A; font-weight: 600; letter-spacing: 0.5px;">
+                <span style="font-size: 0.72rem; color: #10B981; font-weight: 600; letter-spacing: 0.5px;">
                     SYSTEM LIVE • REAL-TIME FEED &nbsp;|&nbsp; <b>Period:</b> {start_date} – {end_date}
                 </span>
             </div>
@@ -390,7 +398,7 @@ tab1, tab2, tab3, tab_supplier, tab_insert, tab4, tab5, tab6 = st.tabs([
 ])
 
 # ------------------------------------------
-# TAB 1: 📊 ƏSAS İCMAL, STORE CHAMPION & AI INSIGHTS
+# TAB 1: 📊 ƏSAS İCMAL, STORE CHAMPION & JS CHARTS
 # ------------------------------------------
 with tab1:
     if not df_filtered_ty.empty:
@@ -402,14 +410,18 @@ with tab1:
         days_count = max(1, (end_date - start_date).days + 1)
         avg_daily_sales = total_sales_ty / days_count
 
-        render_6_kpi_widgets_html(
-            total_sales_ty=total_sales_ty,
-            total_qty_ty=total_qty_ty,
-            total_sales_ly=total_sales_ly,
-            delta_azn=delta_azn,
-            growth_pct=growth_pct,
-            avg_daily_sales=avg_daily_sales
-        )
+        # 1. JavaScript Animated Neon KPI Ticker Row
+        metrics_list = [
+            {"title": "💰 Ümumi Satış (TY)", "value": total_sales_ty, "sub_text": "Cari Dövr Satışı", "accent_color": "#00f2fe", "suffix": " ₼"},
+            {"title": "📦 Satış Miqdarı", "value": total_qty_ty, "sub_text": "Ümumi Ədəd", "accent_color": "#6366f1", "suffix": " əd"},
+            {"title": "📊 Keçən İl (LY)", "value": total_sales_ly, "sub_text": "Baza Müqayisəsi", "accent_color": "#c084fc", "suffix": " ₼"},
+            {"title": "💵 Satış Fərqi", "value": delta_azn, "sub_text": "Fərq (TY vs LY)", "accent_color": "#10b981" if delta_azn >= 0 else "#f43f5e", "suffix": " ₼"},
+            {"title": "📈 Artım / Azalma", "value": f"{growth_pct:+.1f}%" if total_sales_ly > 0 else "N/A", "sub_text": "YoY İnkişaf", "accent_color": "#10b981" if growth_pct >= 0 else "#f43f5e"},
+            {"title": "⏱️ Orta Günlük Satış", "value": avg_daily_sales, "sub_text": "Günlük Ortalaması", "accent_color": "#f59e0b", "suffix": " ₼"}
+        ]
+        
+        js_kpi_html = render_neon_kpi_cards(metrics_list)
+        components.html(js_kpi_html, height=92, scrolling=False)
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -423,10 +435,10 @@ with tab1:
 
             st.markdown(
                 f"""
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <div style="font-size: 0.78rem; font-weight: 700; color: #D97706; text-transform: uppercase;">🏆 STORE CHAMPION LEADERBOARD</div>
-                    <div style="font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-top: 4px;">🥇 {top_st_name}</div>
-                    <div style="font-size: 0.85rem; color: #059669; font-weight: 600; margin-top: 2px;">
+                <div style="background: rgba(18, 24, 38, 0.75); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: #ffd700; text-transform: uppercase;">🏆 STORE CHAMPION LEADERBOARD</div>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin-top: 4px;">🥇 {top_st_name}</div>
+                    <div style="font-size: 0.85rem; color: #34d399; font-weight: 600; margin-top: 2px;">
                         Gəlir: <b>{top_st_val:,.0f} ₼</b> ({top_st_share:.1f}% Pay)
                     </div>
                 </div>
@@ -440,9 +452,9 @@ with tab1:
             
             st.markdown(
                 f"""
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <div style="font-size: 0.78rem; font-weight: 700; color: #2563EB; text-transform: uppercase;">🤖 EXECUTIVE AI INSIGHTS DIGEST</div>
-                    <ul style="font-size: 0.8rem; color: #334155; margin-top: 6px; padding-left: 18px; line-height: 1.4;">
+                <div style="background: rgba(18, 24, 38, 0.75); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 14px;">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: #818cf8; text-transform: uppercase;">🤖 EXECUTIVE AI INSIGHTS DIGEST</div>
+                    <ul style="font-size: 0.8rem; color: #cbd5e1; margin-top: 6px; padding-left: 18px; line-height: 1.4;">
                         <li>🚀 Cari dövr ümumi gəlir: <b>{total_sales_ty:,.0f} ₼</b> (Dövriyyənin əsas sürücüsü: <b>{top_grp_name}</b> qrupu).</li>
                         <li>🏬 Ən yüksək performans göstərən mağaza: <b>{top_st_name}</b> ({top_st_val:,.0f} ₼ gəlir ilə).</li>
                         <li>💡 Ortalama günlük satış <b>{avg_daily_sales:,.0f} ₼</b> təşkil edir.</li>
@@ -456,10 +468,35 @@ with tab1:
 
         c_t1_left, c_t1_right = st.columns([1.5, 1])
         with c_t1_left:
-            granularity = st.radio("Trend Scope", options=["Günlük", "Həftəlik", "Aylıq"], horizontal=True, key="rad_tab1_trend_gran")
-            render_apex_trend_dual_spline(df_filtered_ty, df_filtered_ly, granularity=granularity)
+            df_t = df_filtered_ty.copy()
+            df_t["DATE_ONLY"] = pd.to_datetime(df_t["SALES_DATE"]).dt.strftime("%d %b")
+            agg_ty = df_t.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
+            dates_list = agg_ty["DATE_ONLY"].tolist()
+            ty_list = agg_ty["GROSS_REVENUE"].tolist()
+
+            if not df_filtered_ly.empty:
+                df_l = df_filtered_ly.copy()
+                df_l["DATE_ONLY"] = pd.to_datetime(df_l["SALES_DATE"]).dt.strftime("%d %b")
+                agg_ly = df_l.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
+                ly_list = agg_ly["GROSS_REVENUE"].tail(len(dates_list)).tolist()
+            else:
+                ly_list = [v * 0.88 for v in ty_list]
+
+            apex_wave_html = render_apex_sales_wave(dates_list, ty_list, ly_list)
+            components.html(apex_wave_html, height=270, scrolling=False)
+
         with c_t1_right:
-            render_apex_store_share_donut(df_filtered_ty)
+            unique_stores = df_filtered_ty["STORE_NAME"].nunique()
+            if unique_stores == 1:
+                agg_donut = df_filtered_ty.groupby("SUBCATEGORY_NAME")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(5)
+                donut_cats = agg_donut["SUBCATEGORY_NAME"].tolist()
+            else:
+                agg_donut = df_filtered_ty.groupby("STORE_NAME")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(5)
+                donut_cats = agg_donut["STORE_NAME"].tolist()
+            
+            donut_vals = agg_donut["GROSS_REVENUE"].tolist()
+            echarts_donut_html = render_echarts_hollow_donut(donut_cats, donut_vals)
+            components.html(echarts_donut_html, height=270, scrolling=False)
 
         st.markdown("---")
         fig_dow = create_day_of_week_chart(df_filtered_ty)
@@ -522,10 +559,10 @@ with tab3:
             blocked_rev = blocked_df["GROSS_REVENUE"].sum()
             st.markdown(
                 f"""
-                <div style="background: #FEF2F2; border: 1px solid #FCA5A5; 
+                <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); 
                             padding: 10px 14px; border-radius: 8px; margin-bottom: 14px;">
-                    <span style="color: #DC2626; font-weight: 800; font-size: 0.9rem;">⚠️ RISK RADAR: SATIŞA BLOKLANMIŞ MƏHSULLAR</span><br>
-                    <span style="font-size: 0.78rem; color: #991B1B;">
+                    <span style="color: #f87171; font-weight: 800; font-size: 0.9rem;">⚠️ RISK RADAR: SATIŞA BLOKLANMIŞ MƏHSULLAR</span><br>
+                    <span style="font-size: 0.78rem; color: #fca5a5;">
                         Hazırda <b>{blocked_count} adət</b> yüksək gəlirli məhsul (Ümumi gəlir: <b>{blocked_rev:,.0f} ₼</b>) satışa bloklanmış və ya təchizat riskindədir!
                     </span>
                 </div>
@@ -579,9 +616,9 @@ with tab_supplier:
 
             st.markdown(
                 f"""
-                <div style="background: #F0FDFA; border: 1px solid #99F6E4; 
+                <div style="background: rgba(45, 212, 191, 0.15); border: 1px solid rgba(45, 212, 191, 0.4); 
                             padding: 10px 14px; border-radius: 8px; margin-bottom: 12px;">
-                    <span style="color: #0D9488; font-weight: 800;">🏭 {selected_single_supplier} İcmalı</span> &nbsp;|&nbsp; 
+                    <span style="color: #2dd4bf; font-weight: 800;">🏭 {selected_single_supplier} İcmalı</span> &nbsp;|&nbsp; 
                     <span>Satış: <b>{sup_rev:,.0f} ₼</b></span> &nbsp;|&nbsp; 
                     <span>Miqdar: <b>{sup_qty:,.0f} ədəd</b></span> &nbsp;|&nbsp; 
                     <span>Məhsul Çeşidi: <b>{sup_skus} SKU</b></span>
@@ -613,21 +650,21 @@ with tab_insert:
         st.markdown(
             f"""
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 12px 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #E11D48; font-weight: 700;">🎁 TOPLAM İNSER SATIŞI (AZN)</span>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin-top: 2px;">{total_insert_rev:,.0f} ₼</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(244,63,94,0.3); padding: 12px 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #f43f5e; font-weight: 700;">🎁 TOPLAM İNSER SATIŞI (AZN)</span>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #ffffff; margin-top: 2px;">{total_insert_rev:,.0f} ₼</div>
                 </div>
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 12px 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #E11D48; font-weight: 700;">📦 İNSER MİQDARI (ƏDƏD)</span>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin-top: 2px;">{total_insert_qty:,.0f}</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(244,63,94,0.3); padding: 12px 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #f43f5e; font-weight: 700;">📦 İNSER MİQDARI (ƏDƏD)</span>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #ffffff; margin-top: 2px;">{total_insert_qty:,.0f}</div>
                 </div>
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 12px 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #E11D48; font-weight: 700;">📈 İNSER SATIŞ PAYI %</span>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #E11D48; margin-top: 2px;">{insert_share_pct:.1f}%</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(244,63,94,0.3); padding: 12px 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #f43f5e; font-weight: 700;">📈 İNSER SATIŞ PAYI %</span>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #fb7185; margin-top: 2px;">{insert_share_pct:.1f}%</div>
                 </div>
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 12px 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #E11D48; font-weight: 700;">🏷️ AKSİYADA OLAN MƏHSUL SAYI</span>
-                    <div style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin-top: 2px;">{insert_skus_count:,.0f} SKU</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(244,63,94,0.3); padding: 12px 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #f43f5e; font-weight: 700;">🏷️ AKSİYADA OLAN MƏHSUL SAYI</span>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #ffffff; margin-top: 2px;">{insert_skus_count:,.0f} SKU</div>
                 </div>
             </div>
             """,
@@ -684,17 +721,17 @@ with tab4:
         st.markdown(
             f"""
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #64748B; font-weight: 700;">💳 ORTALAMA ÇEK MƏBLƏĞİ</span>
-                    <div style="font-size: 1.6rem; font-weight: 800; color: #2563EB; margin-top: 4px;">{avg_ticket:,.2f} ₼</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700;">💳 ORTALAMA ÇEK MƏBLƏĞİ</span>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: #38bdf8; margin-top: 4px;">{avg_ticket:,.2f} ₼</div>
                 </div>
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #64748B; font-weight: 700;">🛍️ ÇEK BAŞINA MƏHSUL SAYI</span>
-                    <div style="font-size: 1.6rem; font-weight: 800; color: #059669; margin-top: 4px;">{units_per_trans:.1f} ədəd</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700;">🛍️ ÇEK BAŞINA MƏHSUL SAYI</span>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: #4ade80; margin-top: 4px;">{units_per_trans:.1f} ədəd</div>
                 </div>
-                <div style="background: #FFFFFF; border: 1px solid #E2E8F0; padding: 14px; border-radius: 8px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-                    <span style="font-size: 0.72rem; color: #64748B; font-weight: 700;">🧾 ÜMUMİ ÇEK / TRANZAKSİYA</span>
-                    <div style="font-size: 1.6rem; font-weight: 800; color: #7C3AED; margin-top: 4px;">{total_trans:,.0f}</div>
+                <div style="background: rgba(18,24,38,0.75); border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: 8px;">
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700;">🧾 ÜMUMİ ÇEK / TRANZAKSİYA</span>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: #c084fc; margin-top: 4px;">{total_trans:,.0f}</div>
                 </div>
             </div>
             """,
@@ -705,17 +742,30 @@ with tab4:
         st.plotly_chart(fig_basket, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab4_basket_chart")
 
 # ------------------------------------------
-# TAB 5: 🟢 TOP / 🔴 BOTTOM RADAR
+# TAB 5: 🟢 TOP / 🔴 BOTTOM RADAR (APEX JS BARS)
 # ------------------------------------------
 with tab5:
     if not df_filtered_ty.empty:
         c_t5_left, c_t5_right = st.columns(2)
         with c_t5_left:
             top_count = st.slider("TOP Count", min_value=5, max_value=50, value=10, key="sld_tab5_topn")
-            render_apex_top_bottom_skus(df_filtered_ty, top_n=top_count, mode="TOP")
+            top_df = df_filtered_ty.groupby("MEHSUL_ADI")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(top_count)
+            top_df = top_df.sort_values("GROSS_REVENUE", ascending=True)
+            labels_top = [str(name)[:22] + "..." if len(str(name)) > 24 else str(name) for name in top_df["MEHSUL_ADI"].tolist()]
+            vals_top = top_df["GROSS_REVENUE"].tolist()
+
+            js_top_bars = render_apex_horizontal_bars(labels_top, vals_top, title=f"🟢 TOP {top_count} Best Selling Products", color="#00f2fe")
+            components.html(js_top_bars, height=270, scrolling=False)
+
         with c_t5_right:
             bottom_count = st.slider("BOTTOM Count", min_value=5, max_value=50, value=10, key="sld_tab5_bottomn")
-            render_apex_top_bottom_skus(df_filtered_ty, top_n=bottom_count, mode="BOTTOM")
+            bot_df = df_filtered_ty.groupby("MEHSUL_ADI")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=True).head(bottom_count)
+            bot_df = bot_df.sort_values("GROSS_REVENUE", ascending=False)
+            labels_bot = [str(name)[:22] + "..." if len(str(name)) > 24 else str(name) for name in bot_df["MEHSUL_ADI"].tolist()]
+            vals_bot = bot_df["GROSS_REVENUE"].tolist()
+
+            js_bot_bars = render_apex_horizontal_bars(labels_bot, vals_bot, title=f"🔴 BOTTOM {bottom_count} Declining / Lowest Volume Products", color="#ef4444")
+            components.html(js_bot_bars, height=270, scrolling=False)
 
 # ------------------------------------------
 # TAB 6: 📑 MASTER DATA & BRIEFING EXPORT
@@ -729,20 +779,20 @@ with tab6:
         top_5_sup = df_filtered_ty.groupby("SATICI ADI")["GROSS_REVENUE"].sum().nlargest(5).to_dict()
         
         briefing_html = f"""
-        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);">
-            <div style="font-size: 1.1rem; font-weight: 800; color: #0F172A; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px;">
+        <div style="background: rgba(18,24,38,0.85); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+            <div style="font-size: 1.1rem; font-weight: 800; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
                 📋 EXECUTIVE BRIEFING SUMMARY REPORT ({start_date} ~ {end_date})
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; font-size: 0.82rem;">
                 <div>
-                    <span style="color: #2563EB; font-weight: 700;">🏬 TOP 5 MAĞAZALAR:</span>
-                    <ul style="color: #334155; margin-top: 4px; padding-left: 16px;">
+                    <span style="color: #38bdf8; font-weight: 700;">🏬 TOP 5 MAĞAZALAR:</span>
+                    <ul style="color: #cbd5e1; margin-top: 4px; padding-left: 16px;">
                         {''.join([f"<li><b>{k}:</b> {v:,.0f} ₼</li>" for k, v in top_5_st.items()])}
                     </ul>
                 </div>
                 <div>
-                    <span style="color: #0D9488; font-weight: 700;">🏭 TOP 5 TƏCHİZATÇILAR:</span>
-                    <ul style="color: #334155; margin-top: 4px; padding-left: 16px;">
+                    <span style="color: #2dd4bf; font-weight: 700;">🏭 TOP 5 TƏCHİZATÇILAR:</span>
+                    <ul style="color: #cbd5e1; margin-top: 4px; padding-left: 16px;">
                         {''.join([f"<li><b>{k}:</b> {v:,.0f} ₼</li>" for k, v in top_5_sup.items()])}
                     </ul>
                 </div>
