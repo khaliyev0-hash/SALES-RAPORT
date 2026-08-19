@@ -1,7 +1,7 @@
 """
-Executive Sales Intelligence & Retail Analytics Application
-Integrated Supplier Intelligence Tab, Risk Radar, Executive Briefing Export,
-and Khayal Aliyev Pulsating Neon Branding Badge.
+Tam Store Sales Analysis Portal
+Architected & Engineered by Khayal Aliyev
+Unified Dark Theme Enforced Across All Browsers & Machines
 """
 
 import io
@@ -34,7 +34,7 @@ from visuals import (
 
 # Page Setup
 st.set_page_config(
-    page_title="Executive Sales Analytics Portal",
+    page_title="Tam Store Sales Analysis Portal",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -43,14 +43,35 @@ st.set_page_config(
 # Inject Modern CSS Theme & Header Void Fix
 inject_global_theme_css()
 
+# Enforce Dark Mode CSS Overrides
 st.markdown(
     """
     <style>
+    /* Force exact dark slate theme on entire app and sidebar */
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        background-color: #070A13 !important;
+        color: #e2e8f0 !important;
+    }
+
+    [data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
+        background-color: #0D111E !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* Fix input, selectbox, and uploader backgrounds */
+    div[data-baseweb="select"], div[data-baseweb="input"], .stDateInput input, .stFileUploader {
+        background-color: #131B2E !important;
+        color: #e2e8f0 !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    /* Remove default Streamlit top header gap */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0rem !important;
         z-index: -1 !important;
     }
+
     .block-container {
         padding-top: 0.4rem !important;
         padding-bottom: 2rem !important;
@@ -229,9 +250,6 @@ with st.sidebar:
         force_db_status_reset()
         st.rerun()
 
-    st.markdown("<br>", unsafe_allow_html=True)
-    render_khayal_aliyev_branding_badge()
-
 # Filter Datasets
 df_filtered_ty = apply_cascading_filters(
     df_base_ty,
@@ -261,40 +279,38 @@ df_filtered_ty = standardize_dataframe_columns(df_filtered_ty)
 df_filtered_ly = standardize_dataframe_columns(df_filtered_ly)
 
 # ==========================================
-# CYBERPUNK LIVE HEADER WITH KHAYAL ALIYEV BRANDING
+# CYBERPUNK LIVE HEADER WITH TAM STORE TITLE & ALIGNED CONTROLS
 # ==========================================
-active_stores_cnt = df_filtered_ty["STORE_ID"].nunique() if not df_filtered_ty.empty else 0
+c_hdr_title, c_hdr_badge, c_hdr_controls = st.columns([2.2, 1.3, 0.8])
 
-c_hdr_left, c_hdr_right = st.columns([2.5, 1.5])
-
-with c_hdr_left:
+with c_hdr_title:
     st.markdown(
         f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; 
+        <div style="display: flex; align-items: center; gap: 12px; padding: 6px 14px; 
                     background: rgba(18, 24, 38, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span class="live-dot"></span>
-                <div>
-                    <h2 style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #ffffff; letter-spacing: -0.01em;">
-                        EXECUTIVE SALES ANALYTICS PORTAL
-                    </h2>
-                    <span style="font-size: 0.74rem; color: #10B981; font-weight: 600; letter-spacing: 0.5px;">
-                        SYSTEM LIVE • REAL-TIME FEED &nbsp;|&nbsp; <b>Selected Period:</b> {start_date} – {end_date}
-                    </span>
-                </div>
+            <span class="live-dot"></span>
+            <div>
+                <h2 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #ffffff; letter-spacing: -0.01em;">
+                    Tam Store Sales Analysis Portal
+                </h2>
+                <span style="font-size: 0.72rem; color: #10B981; font-weight: 600; letter-spacing: 0.5px;">
+                    SYSTEM LIVE • REAL-TIME FEED &nbsp;|&nbsp; <b>Period:</b> {start_date} – {end_date}
+                </span>
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-with c_hdr_right:
+with c_hdr_badge:
     render_khayal_aliyev_branding_badge()
+
+with c_hdr_controls:
     c_btn1, c_btn2 = st.columns(2)
-    if c_btn1.button("🔄 Reset", use_container_width=True, key="btn_hdr_reset"):
+    if c_btn1.button("🔄", use_container_width=True, key="btn_hdr_reset", help="Reset All Filters"):
         reset_all_sidebar_filters()
         st.rerun()
-    if c_btn2.button("⚡ Refresh", use_container_width=True, key="btn_hdr_refresh"):
+    if c_btn2.button("⚡", use_container_width=True, key="btn_hdr_refresh", help="Live Refresh Database"):
         force_db_status_reset()
         st.rerun()
 
@@ -445,7 +461,6 @@ with tab2:
 # ------------------------------------------
 with tab3:
     if not df_filtered_ty.empty:
-        # 3. OPERATIONAL STATUS & RISK RADAR (SATISA BLOKLU)
         blocked_df = df_filtered_ty[df_filtered_ty["SATISA BLOKLU"] == 1]
         if not blocked_df.empty:
             blocked_count = blocked_df["MEHSUL_KODU"].nunique()
@@ -654,7 +669,6 @@ with tab6:
     st.markdown("### 📑 Executive Briefing & Master Data Export Engine")
     
     if not df_filtered_ty.empty:
-        # 4. EXECUTIVE BRIEFING EXPORT CARD
         st.markdown("#### 📄 Executive Briefing Summary Report")
         top_5_st = df_filtered_ty.groupby("STORE_NAME")["GROSS_REVENUE"].sum().nlargest(5).to_dict()
         top_5_sup = df_filtered_ty.groupby("SATICI ADI")["GROSS_REVENUE"].sum().nlargest(5).to_dict()

@@ -2,7 +2,7 @@
 Frontend Components Engine (Tier-1 Luxury SaaS Interface)
 Inspired by Linear, Vercel Dark Theme & Stripe Radar
 Pure JS, ApexCharts CDN, Tailwind CSS & CSS3 Glassmorphic Micro-Animations
-Includes "POWERED BY KHAYAL ALIYEV" Pulsating Neon Branding Badge
+Enforced Dark Mode & Tam Store Title Formatting
 """
 
 import json
@@ -22,32 +22,42 @@ def format_currency_azn(val: float) -> str:
 
 
 def inject_global_theme_css():
-    """Injects Tier-1 Luxury SaaS CSS3 theme with pulsing indicators and glassmorphic micro-animations."""
+    """Injects high-priority dark theme CSS to force dark mode across all browsers and inputs."""
     st.markdown(
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
-        html, body, [class*="css"] {
-            font-family: 'Inter', -apple-system, sans-serif;
+        /* Force exact dark slate theme on entire app and sidebar */
+        html, body, [data-testid="stAppViewContainer"], .stApp {
             background-color: #070A13 !important;
-            color: #f8fafc;
+            color: #e2e8f0 !important;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
 
-        .stApp {
-            background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #070A13 60%, #05070f 100%);
+        [data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
+            background-color: #0D111E !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* Fix input, selectbox, and uploader backgrounds */
+        div[data-baseweb="select"], div[data-baseweb="input"], .stDateInput input, .stFileUploader {
+            background-color: #131B2E !important;
+            color: #e2e8f0 !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        /* Remove default Streamlit top header gap */
+        header[data-testid="stHeader"] {
+            background: transparent !important;
+            height: 0rem !important;
+            z-index: -1 !important;
         }
 
         .block-container {
             padding-top: 0.3rem !important;
             padding-bottom: 0.3rem !important;
             max-width: 98.5% !important;
-        }
-
-        section[data-testid="stSidebar"] {
-            background: rgba(13, 17, 30, 0.95) !important;
-            backdrop-filter: blur(24px) saturate(180%);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         div[data-testid="column"] {
@@ -76,13 +86,12 @@ def inject_global_theme_css():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            margin-bottom: 6px;
         }
         .creator-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(236, 72, 153, 0.18));
             border: 1px solid rgba(168, 85, 247, 0.4);
@@ -99,7 +108,7 @@ def inject_global_theme_css():
         }
         .badge-text {
             color: #e2e8f0;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
         }
         @keyframes neonGlowPulse {
