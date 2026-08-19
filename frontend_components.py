@@ -2,7 +2,7 @@
 Frontend Components Engine (Tier-1 Luxury SaaS Interface)
 Inspired by Linear, Vercel Dark Theme & Stripe Radar
 Pure JS, ApexCharts CDN, Tailwind CSS & CSS3 Glassmorphic Micro-Animations
-Enforced Dark Mode & Tam Store Title Formatting
+Enforced High-Specificity Dark Mode & Neon Tab Styling
 """
 
 import json
@@ -22,7 +22,7 @@ def format_currency_azn(val: float) -> str:
 
 
 def inject_global_theme_css():
-    """Injects high-priority dark theme CSS to force dark mode across all browsers and inputs."""
+    """Injects high-priority dark theme CSS to force dark mode across all browsers, inputs, buttons, and tabs."""
     st.markdown(
         """
         <style>
@@ -40,11 +40,84 @@ def inject_global_theme_css():
             border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
 
-        /* Fix input, selectbox, and uploader backgrounds */
-        div[data-baseweb="select"], div[data-baseweb="input"], .stDateInput input, .stFileUploader {
-            background-color: #131B2E !important;
-            color: #e2e8f0 !important;
-            border-color: rgba(255, 255, 255, 0.12) !important;
+        /* All Buttons (Sidebar Live Refresh, Reset, Top Right Buttons) */
+        button[kind="primary"], button[kind="secondary"], .stButton > button, div[data-testid="stFileUploader"] button {
+            background: linear-gradient(135deg, #1E293B, #0F172A) !important;
+            color: #38BDF8 !important;
+            border: 1px solid rgba(56, 189, 248, 0.35) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        button[kind="primary"]:hover, button[kind="secondary"]:hover, .stButton > button:hover {
+            background: linear-gradient(135deg, #0284C7, #0369A1) !important;
+            color: #FFFFFF !important;
+            border-color: #38BDF8 !important;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.5) !important;
+        }
+
+        /* File Uploader Dropzone Box */
+        div[data-testid="stFileUploader"], section[data-testid="stFileUploadDropzone"] {
+            background-color: #111827 !important;
+            border: 1px dashed rgba(56, 189, 248, 0.4) !important;
+            color: #E2E8F0 !important;
+            border-radius: 10px !important;
+        }
+
+        div[data-testid="stFileUploader"] small, section[data-testid="stFileUploadDropzone"] span {
+            color: #94A3B8 !important;
+        }
+
+        /* Dropdown / Selectbox controls and popup menus */
+        div[data-baseweb="select"] > div, div[data-baseweb="select"] input {
+            background-color: #111827 !important;
+            color: #F8FAFC !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        ul[data-baseweb="menu"] {
+            background-color: #0F172A !important;
+            color: #F8FAFC !important;
+            border: 1px solid rgba(56, 189, 248, 0.2) !important;
+        }
+        li[data-baseweb="menu-item"] {
+            color: #E2E8F0 !important;
+        }
+        li[data-baseweb="menu-item"]:hover {
+            background-color: rgba(56, 189, 248, 0.15) !important;
+            color: #38BDF8 !important;
+        }
+
+        /* All Inactive Tabs */
+        button[data-baseweb="tab"] {
+            background-color: rgba(30, 41, 59, 0.5) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 8px 8px 0px 0px !important;
+            color: #94A3B8 !important;
+            font-weight: 600 !important;
+            font-size: 13.5px !important;
+            padding: 8px 16px !important;
+            margin-right: 4px !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        /* Inactive Tab Text & Icons Glow on Hover */
+        button[data-baseweb="tab"]:hover {
+            color: #38BDF8 !important;
+            background-color: rgba(56, 189, 248, 0.12) !important;
+            border-color: rgba(56, 189, 248, 0.3) !important;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.5) !important;
+        }
+
+        /* Active Selected Tab (Vibrant Cyan Neon) */
+        button[data-baseweb="tab"][aria-selected="true"] {
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.2), rgba(15, 23, 42, 0.9)) !important;
+            color: #38BDF8 !important;
+            border: 1px solid #38BDF8 !important;
+            border-bottom: 3px solid #38BDF8 !important;
+            font-weight: 700 !important;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.7) !important;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.2) !important;
         }
 
         /* Remove default Streamlit top header gap */
