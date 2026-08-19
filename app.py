@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Theme Engine (Sidebar Dropdowns Neon Override)
+High-Tech Cosmic Dark & Neon Glow Theme Engine (Date Picker & Permanent Neon Labels/Tabs Override)
 """
 
 import io
@@ -46,7 +46,7 @@ st.set_page_config(
 # Inject Global Theme
 inject_global_theme_css()
 
-# High-Specificity Cosmic Dark & Neon Glow CSS (Sidebar Dropdowns Neon Override)
+# High-Specificity Cosmic Dark & Neon Glow CSS (Date Picker & Permanent Neon Labels/Tabs Override)
 st.markdown(
     """
     <style>
@@ -91,36 +91,85 @@ st.markdown(
         font-weight: 800 !important;
     }
 
-    /* --- Permanent Glowing Tabs --- */
-    button[data-baseweb="tab"],
-    div[data-testid="stTabs"] button[role="tab"],
-    div[data-testid="stTabs"] button {
-        background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(0, 242, 254, 0.25) !important;
-        border-radius: 8px 8px 0 0 !important;
+    /* =======================================================
+       1. FIX DATE INPUT CONTAINER & PICKER BACKGROUND
+       ======================================================= */
+    [data-testid="stSidebar"] div[data-baseweb="input"],
+    [data-testid="stSidebar"] div[data-baseweb="input"] > input,
+    [data-testid="stSidebar"] .stDateInput input,
+    [data-testid="stSidebar"] div[data-testid="stDateInput"] > div > div {
+        background-color: #101726 !important;
+        background: #101726 !important;
+        border: 1px solid rgba(0, 242, 254, 0.35) !important;
+        border-radius: 8px !important;
+        color: #00F2FE !important;
+        font-weight: 600 !important;
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.12) !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="input"] input::placeholder {
+        color: #67e8f9 !important;
+    }
+
+    /* =======================================================
+       2. ALL SIDEBAR LABELS & HEADINGS TO BRIGHT NEON CYAN
+       ======================================================= */
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] label p,
+    [data-testid="stSidebar"] label span,
+    [data-testid="stSidebar"] .stMarkdown p,
+    [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2,
+    [data-testid="stSidebar"] .stMarkdown h3,
+    [data-testid="stSidebar"] .stMarkdown h4,
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
         color: #38BDF8 !important;
         font-weight: 700 !important;
-        margin-right: 4px !important;
+        letter-spacing: 0.4px !important;
         text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
     }
 
-    button[data-baseweb="tab"][aria-selected="true"],
+    /* =======================================================
+       3. PERMANENT BRIGHT NEON CYAN FOR ALL TAB TITLES
+       ======================================================= */
+    div[data-testid="stTabs"] button[role="tab"],
+    button[data-baseweb="tab"] {
+        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1px solid rgba(0, 242, 254, 0.3) !important;
+        border-radius: 8px 8px 0 0 !important;
+        margin-right: 5px !important;
+        padding: 8px 16px !important;
+        transition: all 0.25s ease-in-out !important;
+    }
+
+    div[data-testid="stTabs"] button[role="tab"] p,
+    div[data-testid="stTabs"] button[role="tab"] span,
+    div[data-testid="stTabs"] button[role="tab"] div,
+    button[data-baseweb="tab"] * {
+        color: #38BDF8 !important;
+        font-weight: 700 !important;
+        font-size: 13.5px !important;
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.75) !important;
+    }
+
     div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
-    div[data-testid="stTabs"] button[aria-selected="true"] {
-        background: linear-gradient(180deg, rgba(0, 242, 254, 0.25), rgba(15, 23, 42, 0.95)) !important;
+    button[data-baseweb="tab"][aria-selected="true"] {
+        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
         border: 1px solid #00F2FE !important;
         border-bottom: 3px solid #00F2FE !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 0 16px rgba(0, 242, 254, 0.4) !important;
-        text-shadow: 0 0 12px rgba(0, 242, 254, 0.9) !important;
+        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
     }
-    button[data-baseweb="tab"] *,
-    div[data-testid="stTabs"] button[role="tab"] * { color: inherit !important; }
+
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span,
+    button[data-baseweb="tab"][aria-selected="true"] * {
+        color: #FFFFFF !important;
+        text-shadow: 0 0 14px rgba(0, 242, 254, 1) !important;
+    }
 
     /* =======================================================
        FIX SIDEBAR SELECTBOX & MULTISELECT DROPDOWN BOXES
        ======================================================= */
-    /* Main container of all selectboxes and multiselects */
     [data-testid="stSidebar"] div[data-baseweb="select"] > div,
     [data-testid="stSidebar"] div[data-baseweb="select"] div[role="combobox"],
     [data-testid="stSidebar"] .stSelectbox > div > div,
@@ -134,26 +183,22 @@ st.markdown(
         transition: all 0.2s ease-in-out !important;
     }
 
-    /* Hover and Focus States for Inputs */
     [data-testid="stSidebar"] div[data-baseweb="select"] > div:hover,
     [data-testid="stSidebar"] div[data-baseweb="select"] > div:focus-within {
         border-color: #00F2FE !important;
         box-shadow: 0 0 14px rgba(0, 242, 254, 0.3) !important;
     }
 
-    /* Placeholder and Text color inside dropdowns ("Choose options") */
     [data-testid="stSidebar"] div[data-baseweb="select"] * {
         color: #94A3B8 !important;
         font-size: 13.5px !important;
     }
 
-    /* Dropdown arrow icon (SVG) */
     [data-testid="stSidebar"] div[data-baseweb="select"] svg {
         fill: #00F2FE !important;
         color: #00F2FE !important;
     }
 
-    /* Selected item tags/chips (Pills inside MultiSelect) */
     [data-testid="stSidebar"] div[data-baseweb="tag"] {
         background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(99, 102, 241, 0.25)) !important;
         border: 1px solid rgba(0, 242, 254, 0.5) !important;

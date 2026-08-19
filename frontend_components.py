@@ -1,7 +1,7 @@
 """
 Frontend Components Engine (Tier-1 Luxury SaaS Interface)
 High-Tech Cosmic Dark & Neon Glow Theme Engine
-Sidebar Selectbox & MultiSelect Dropdown Fixes
+Date Input Fixes, Permanent Bright Neon Sidebar Texts & Tab Titles
 """
 
 import json
@@ -21,7 +21,7 @@ def format_currency_azn(val: float) -> str:
 
 
 def inject_global_theme_css():
-    """Injects high-priority Cosmic Dark CSS stylesheet with sidebar selectbox neon blue overrides."""
+    """Injects high-priority Cosmic Dark CSS stylesheet with permanent bright neon cyan labels & tabs."""
     st.markdown(
         """
         <style>
@@ -86,41 +86,83 @@ def inject_global_theme_css():
             font-weight: 800 !important;
         }
 
-        /* --- Permanent Glowing Tabs (Max Specificity) --- */
-        button[data-baseweb="tab"],
-        div[data-testid="stTabs"] button[role="tab"],
-        div[data-testid="stTabs"] button {
-            background: rgba(15, 23, 42, 0.85) !important;
-            background-color: #111827 !important;
-            border: 1px solid rgba(0, 242, 254, 0.25) !important;
-            border-radius: 8px 8px 0 0 !important;
+        /* =======================================================
+           1. FIX DATE INPUT CONTAINER & PICKER BACKGROUND
+           ======================================================= */
+        [data-testid="stSidebar"] div[data-baseweb="input"],
+        [data-testid="stSidebar"] div[data-baseweb="input"] > input,
+        [data-testid="stSidebar"] .stDateInput input,
+        [data-testid="stSidebar"] div[data-testid="stDateInput"] > div > div {
+            background-color: #101726 !important;
+            background: #101726 !important;
+            border: 1px solid rgba(0, 242, 254, 0.35) !important;
+            border-radius: 8px !important;
+            color: #00F2FE !important;
+            font-weight: 600 !important;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.12) !important;
+        }
+
+        [data-testid="stSidebar"] div[data-baseweb="input"] input::placeholder {
+            color: #67e8f9 !important;
+        }
+
+        /* =======================================================
+           2. ALL SIDEBAR LABELS & HEADINGS TO BRIGHT NEON CYAN
+           ======================================================= */
+        [data-testid="stSidebar"] label,
+        [data-testid="stSidebar"] label p,
+        [data-testid="stSidebar"] label span,
+        [data-testid="stSidebar"] .stMarkdown p,
+        [data-testid="stSidebar"] .stMarkdown h1,
+        [data-testid="stSidebar"] .stMarkdown h2,
+        [data-testid="stSidebar"] .stMarkdown h3,
+        [data-testid="stSidebar"] .stMarkdown h4,
+        [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
             color: #38BDF8 !important;
             font-weight: 700 !important;
-            font-size: 13.5px !important;
-            padding: 9px 18px !important;
-            margin-right: 4px !important;
+            letter-spacing: 0.4px !important;
             text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15) !important;
+        }
+
+        /* =======================================================
+           3. PERMANENT BRIGHT NEON CYAN FOR ALL TAB TITLES
+           ======================================================= */
+        div[data-testid="stTabs"] button[role="tab"],
+        button[data-baseweb="tab"] {
+            background: rgba(15, 23, 42, 0.85) !important;
+            border: 1px solid rgba(0, 242, 254, 0.3) !important;
+            border-radius: 8px 8px 0 0 !important;
+            margin-right: 5px !important;
+            padding: 8px 16px !important;
             transition: all 0.25s ease-in-out !important;
         }
 
-        button[data-baseweb="tab"][aria-selected="true"],
-        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
-        div[data-testid="stTabs"] button[aria-selected="true"] {
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.25), rgba(15, 23, 42, 0.95)) !important;
-            border: 1px solid #00F2FE !important;
-            border-bottom: 3px solid #00F2FE !important;
-            color: #FFFFFF !important;
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
-            text-shadow: 0 0 12px rgba(0, 242, 254, 0.9) !important;
+        div[data-testid="stTabs"] button[role="tab"] p,
+        div[data-testid="stTabs"] button[role="tab"] span,
+        div[data-testid="stTabs"] button[role="tab"] div,
+        button[data-baseweb="tab"] * {
+            color: #38BDF8 !important;
+            font-weight: 700 !important;
+            font-size: 13.5px !important;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.75) !important;
         }
 
-        button[data-baseweb="tab"] *,
-        div[data-testid="stTabs"] button[role="tab"] * { color: inherit !important; }
+        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
+        button[data-baseweb="tab"][aria-selected="true"] {
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
+            border: 1px solid #00F2FE !important;
+            border-bottom: 3px solid #00F2FE !important;
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
+        }
 
-        /* =======================================================
-           FIX SIDEBAR SELECTBOX & MULTISELECT DROPDOWN BOXES
-           ======================================================= */
+        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
+        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span,
+        button[data-baseweb="tab"][aria-selected="true"] * {
+            color: #FFFFFF !important;
+            text-shadow: 0 0 14px rgba(0, 242, 254, 1) !important;
+        }
+
+        /* --- Sidebar Selectbox & MultiSelect Dropdown Fixes --- */
         [data-testid="stSidebar"] div[data-baseweb="select"] > div,
         [data-testid="stSidebar"] div[data-baseweb="select"] div[role="combobox"],
         [data-testid="stSidebar"] .stSelectbox > div > div,
