@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-Pure JavaScript & ApexCharts / Apache ECharts JS Component Integration
+High-Tech Cosmic Dark & Neon Glow Theme Engine (Streamlit Cloud & Localhost Parity)
 """
 
 import io
@@ -46,7 +46,7 @@ st.set_page_config(
 # Inject Global Theme
 inject_global_theme_css()
 
-# High-Specificity Cosmic Dark & Neon Glow CSS
+# High-Specificity Cosmic Dark & Neon Glow CSS (Streamlit Cloud & Localhost Reinforced)
 st.markdown(
     """
     <style>
@@ -91,9 +91,11 @@ st.markdown(
         font-weight: 800 !important;
     }
 
-    /* --- Permanent Glowing Tabs --- */
-    button[data-baseweb="tab"] {
-        background: rgba(15, 23, 42, 0.8) !important;
+    /* --- Permanent Glowing Tabs (Force neon styled tabs on Cloud & Localhost) --- */
+    button[data-baseweb="tab"],
+    div[data-testid="stTabs"] button[role="tab"],
+    div[data-testid="stTabs"] button {
+        background: rgba(15, 23, 42, 0.85) !important;
         border: 1px solid rgba(0, 242, 254, 0.25) !important;
         border-radius: 8px 8px 0 0 !important;
         color: #38BDF8 !important;
@@ -102,15 +104,18 @@ st.markdown(
         text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
     }
 
-    button[data-baseweb="tab"][aria-selected="true"] {
+    button[data-baseweb="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] button[aria-selected="true"] {
         background: linear-gradient(180deg, rgba(0, 242, 254, 0.25), rgba(15, 23, 42, 0.95)) !important;
-        color: #FFFFFF !important;
         border: 1px solid #00F2FE !important;
         border-bottom: 3px solid #00F2FE !important;
-        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 0 16px rgba(0, 242, 254, 0.4) !important;
         text-shadow: 0 0 12px rgba(0, 242, 254, 0.9) !important;
     }
-    button[data-baseweb="tab"] * { color: inherit !important; }
+    button[data-baseweb="tab"] *,
+    div[data-testid="stTabs"] button[role="tab"] * { color: inherit !important; }
 
     /* --- Dark Inputs, Selectboxes, DatePicker & File Uploader --- */
     div[data-baseweb="select"] > div,
@@ -127,15 +132,22 @@ st.markdown(
     }
     div[data-baseweb="select"] * { color: #F8FAFC !important; }
 
-    /* --- Glowing Buttons --- */
-    .stButton > button, div[data-testid="stFileUploader"] button {
+    /* --- Force dark neon styling for all secondary/header buttons on Cloud & Localhost --- */
+    .stButton > button,
+    div[data-testid="stButton"] > button,
+    button[kind="secondary"],
+    div[data-testid="stFileUploader"] button {
         background: linear-gradient(135deg, #1E293B, #0F172A) !important;
         color: #00F2FE !important;
         border: 1px solid rgba(0, 242, 254, 0.4) !important;
         border-radius: 8px !important;
-        box-shadow: 0 0 12px rgba(0, 242, 254, 0.2) !important;
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.15) !important;
+        font-weight: 600 !important;
     }
-    .stButton > button:hover {
+
+    .stButton > button:hover,
+    div[data-testid="stButton"] > button:hover,
+    button[kind="secondary"]:hover {
         background: linear-gradient(135deg, #0284C7, #0369A1) !important;
         color: #FFFFFF !important;
         box-shadow: 0 0 20px rgba(0, 242, 254, 0.5) !important;
