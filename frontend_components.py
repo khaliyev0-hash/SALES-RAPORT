@@ -1,8 +1,6 @@
 """
-Frontend Components Engine (Tier-1 Luxury SaaS Interface)
-Inspired by Linear, Vercel Dark Theme & Stripe Radar
-Pure JS, ApexCharts CDN, Tailwind CSS & CSS3 Glassmorphic Micro-Animations
-Enforced High-Specificity Permanent Neon Glow & Dark Selectboxes
+Frontend Components Engine (Modern Enterprise Light SaaS Theme)
+Inspired by Apple, Stripe Dashboard, and Microsoft Power BI Light Theme
 """
 
 import json
@@ -22,34 +20,34 @@ def format_currency_azn(val: float) -> str:
 
 
 def inject_global_theme_css():
-    """Injects high-priority dark theme CSS to force dark mode across all browsers, inputs, buttons, and tabs."""
+    """Injects high-end Enterprise Light SaaS stylesheet."""
     st.markdown(
         """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
-
-        /* Force exact dark slate theme on entire app and sidebar */
+        /* --- Global Body & Workspace Background --- */
         html, body, [data-testid="stAppViewContainer"], .stApp {
-            background-color: #070A13 !important;
-            color: #e2e8f0 !important;
-            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #F1F5F9 !important;
+            background: #F1F5F9 !important;
+            color: #0F172A !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif !important;
         }
 
+        /* --- Clean White Sidebar --- */
         [data-testid="stSidebar"], section[data-testid="stSidebar"] > div {
-            background-color: #0D111E !important;
-            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+            background-color: #FFFFFF !important;
+            border-right: 1px solid #E2E8F0 !important;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.03) !important;
         }
 
-        /* Remove default Streamlit top header gap */
+        /* --- Remove Top Header Blank Area --- */
         header[data-testid="stHeader"] {
             background: transparent !important;
             height: 0rem !important;
-            z-index: -1 !important;
         }
 
         .block-container {
-            padding-top: 0.3rem !important;
-            padding-bottom: 0.3rem !important;
+            padding-top: 0.4rem !important;
+            padding-bottom: 2rem !important;
             max-width: 98.5% !important;
         }
 
@@ -57,156 +55,76 @@ def inject_global_theme_css():
             padding: 0 3px;
         }
 
-        /* Pulse Dot Indicator Animation */
+        /* --- Live System Green Badge (Light Mode) --- */
         .live-dot {
-            width: 9px;
-            height: 9px;
-            background: #10B981;
-            border-radius: 50%;
+            width: 9px; height: 9px; background: #16A34A; border-radius: 50%;
             display: inline-block;
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-            animation: live-pulse 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+            box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
+            animation: pulseLight 2s infinite;
+        }
+        @keyframes pulseLight {
+            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
         }
 
-        @keyframes live-pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        /* Khayal Aliyev Pulsating Neon Badge Styling */
-        .creator-badge-container {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-        .creator-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(236, 72, 153, 0.18));
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.35), inset 0 0 10px rgba(99, 102, 241, 0.2);
-            animation: neonGlowPulse 2.5s infinite alternate ease-in-out;
-        }
-        .creator-name {
-            font-weight: 800;
-            color: #38bdf8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.8), 0 0 16px rgba(168, 85, 247, 0.6);
-            animation: textFlicker 3s infinite alternate;
-        }
-        .badge-text {
-            color: #e2e8f0;
-            font-size: 11px;
-            font-weight: 500;
-        }
-        @keyframes neonGlowPulse {
-            0% {
-                box-shadow: 0 0 8px rgba(56, 189, 248, 0.3), inset 0 0 5px rgba(99, 102, 241, 0.1);
-                border-color: rgba(56, 189, 248, 0.3);
-            }
-            100% {
-                box-shadow: 0 0 22px rgba(168, 85, 247, 0.6), inset 0 0 14px rgba(236, 72, 153, 0.3);
-                border-color: rgba(236, 72, 153, 0.6);
-            }
-        }
-        @keyframes textFlicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.85; filter: brightness(1.2); }
-        }
-
-        /* =======================================================
-           1. ELIMINATE ALL WHITE BACKGROUNDS IN SIDEBAR & INPUTS
-           ======================================================= */
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="select"] div[role="combobox"],
-        div[data-baseweb="base-input"],
-        div[data-baseweb="input"],
-        .stSelectbox > div > div,
-        .stMultiSelect > div > div {
-            background-color: #111827 !important;
-            background: #111827 !important;
-            border: 1px solid rgba(56, 189, 248, 0.3) !important;
-            border-radius: 8px !important;
-            color: #F8FAFC !important;
-        }
-
-        div[data-baseweb="select"] * {
-            color: #F8FAFC !important;
-        }
-        div[data-baseweb="select"] span {
-            color: #94A3B8 !important;
-        }
-
-        div[data-testid="stFileUploader"],
-        section[data-testid="stFileUploadDropzone"],
-        section[data-testid="stFileUploadDropzone"] > div {
-            background-color: #111827 !important;
-            background: #111827 !important;
-            border: 1px dashed rgba(56, 189, 248, 0.4) !important;
-            color: #E2E8F0 !important;
-            border-radius: 10px !important;
-        }
-
-        div[data-testid="stFileUploader"] button {
-            background: linear-gradient(135deg, #1E293B, #0F172A) !important;
-            color: #38BDF8 !important;
-            border: 1px solid rgba(56, 189, 248, 0.4) !important;
-        }
-
-        [data-testid="stSidebar"] button,
-        .stButton > button {
-            background: linear-gradient(135deg, #1E293B, #0F172A) !important;
-            background-color: #1E293B !important;
-            color: #38BDF8 !important;
-            border: 1px solid rgba(56, 189, 248, 0.4) !important;
-            border-radius: 8px !important;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2) !important;
-        }
-
-        /* =======================================================
-           2. PERMANENT NEON GLOW ON ALL TAB LABELS (EVEN UNCLICKED)
-           ======================================================= */
+        /* --- Modern Light Tab Bar --- */
         button[data-baseweb="tab"] {
-            background: rgba(17, 24, 39, 0.85) !important;
-            background-color: #111827 !important;
-            border: 1px solid rgba(56, 189, 248, 0.35) !important;
-            border-radius: 8px 8px 0px 0px !important;
-            color: #38BDF8 !important;
-            font-weight: 700 !important;
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 8px 8px 0 0 !important;
+            color: #475569 !important;
+            font-weight: 600 !important;
             font-size: 13.5px !important;
-            padding: 9px 18px !important;
-            margin-right: 6px !important;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15) !important;
-            transition: all 0.25s ease-in-out !important;
+            padding: 10px 18px !important;
+            margin-right: 4px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
         }
-
-        button[data-baseweb="tab"] div,
-        button[data-baseweb="tab"] p,
-        button[data-baseweb="tab"] span {
-            color: #38BDF8 !important;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
+        button[data-baseweb="tab"]:hover {
+            color: #2563EB !important;
+            background-color: #F8FAFC !important;
+            border-color: #CBD5E1 !important;
         }
-
         button[data-baseweb="tab"][aria-selected="true"] {
-            background: linear-gradient(180deg, rgba(56, 189, 248, 0.3), rgba(15, 23, 42, 0.95)) !important;
-            color: #FFFFFF !important;
-            border: 1px solid #38BDF8 !important;
-            border-bottom: 3px solid #00F2FE !important;
-            text-shadow: 0 0 12px rgba(0, 242, 254, 0.9) !important;
-            box-shadow: 0 0 18px rgba(56, 189, 248, 0.4) !important;
+            background-color: #EFF6FF !important;
+            color: #1D4ED8 !important;
+            border: 1px solid #BFDBFE !important;
+            border-bottom: 3px solid #2563EB !important;
+            font-weight: 700 !important;
+        }
+        button[data-baseweb="tab"] * {
+            color: inherit !important;
         }
 
-        button[data-baseweb="tab"][aria-selected="true"] div,
-        button[data-baseweb="tab"][aria-selected="true"] p,
-        button[data-baseweb="tab"][aria-selected="true"] span {
+        /* --- Crisp Light Inputs, Selectbox & Uploader --- */
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="input"],
+        .stDateInput input,
+        div[data-testid="stFileUploader"],
+        section[data-testid="stFileUploadDropzone"] {
+            background-color: #F8FAFC !important;
+            border: 1px solid #CBD5E1 !important;
+            color: #0F172A !important;
+            border-radius: 8px !important;
+        }
+        div[data-baseweb="select"] * {
+            color: #0F172A !important;
+        }
+
+        /* --- Buttons (Clean Blue & Slate Accents) --- */
+        .stButton > button, button[kind="secondary"] {
+            background: #FFFFFF !important;
+            color: #0F172A !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }
+        .stButton > button:hover {
+            background: #2563EB !important;
             color: #FFFFFF !important;
-            text-shadow: 0 0 12px rgba(0, 242, 254, 0.9) !important;
+            border-color: #2563EB !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
         }
         </style>
         """,
@@ -215,12 +133,11 @@ def inject_global_theme_css():
 
 
 def render_khayal_aliyev_branding_badge():
-    """Renders the Khayal Aliyev pulsating neon branding badge."""
+    """Renders the Khayal Aliyev Light Theme Creator Pill."""
     html = """
-    <div class="creator-badge-container">
-      <div class="creator-badge">
-        <span class="badge-icon">⚡</span>
-        <span class="badge-text">Architected & Engineered by <span class="creator-name">Khayal Aliyev</span></span>
+    <div style="display: flex; justify-content: flex-end; align-items: center;">
+      <div style="background: #EFF6FF; border: 1px solid #BFDBFE; padding: 6px 14px; border-radius: 20px; color: #1D4ED8; font-weight: 700; font-size: 12px; box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);">
+        ⚡ Architected by Khayal Aliyev
       </div>
     </div>
     """
@@ -235,14 +152,14 @@ def render_6_kpi_widgets_html(
     growth_pct: float,
     avg_daily_sales: float
 ):
-    """Renders 6 Luxury Glassmorphic KPI Row Cards with multi-color neon accent top borders."""
+    """Renders 6 Crisp White Light Enterprise KPI Cards with Soft Shadows."""
     if total_sales_ly <= 0 or abs(growth_pct) > 500 or pd.isna(growth_pct):
         growth_str = "N/A"
-        growth_color = "text-amber-400 border-amber-500/30 bg-amber-500/15"
+        growth_color = "text-amber-700 bg-amber-50 border-amber-200"
     else:
         arrow = "▲" if growth_pct >= 0 else "▼"
         growth_str = f"{arrow} {abs(growth_pct):.1f}%"
-        growth_color = "text-emerald-400 border-emerald-500/30 bg-emerald-500/15" if growth_pct >= 0 else "text-rose-400 border-rose-500/30 bg-rose-500/15"
+        growth_color = "text-emerald-700 bg-emerald-50 border-emerald-200" if growth_pct >= 0 else "text-rose-700 bg-rose-50 border-rose-200"
 
     html = f"""
     <!DOCTYPE html>
@@ -250,91 +167,80 @@ def render_6_kpi_widgets_html(
     <head>
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800&display=swap');
-            body {{ background: transparent; margin: 0; font-family: 'Inter', sans-serif; color: #f8fafc; }}
-            .glass-card {{
-                background: rgba(18, 24, 38, 0.75);
-                backdrop-filter: blur(20px) saturate(180%);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 10px;
-                padding: 10px 14px;
-                position: relative;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700;800&display=swap');
+            body {{ background: transparent; margin: 0; font-family: 'Inter', sans-serif; color: #0f172a; }}
+            .metric-card {{
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px 14px;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+                transition: all 0.25s ease;
             }}
-            .glass-card:hover {{
-                border-color: rgba(99, 102, 241, 0.35);
-                box-shadow: 0 8px 32px 0 rgba(99, 102, 241, 0.25);
+            .metric-card:hover {{
                 transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(37, 99, 235, 0.08);
+                border-color: #93c5fd;
             }}
-            .top-accent-cyan {{ border-top: 2.5px solid #00f2fe; }}
-            .top-accent-indigo {{ border-top: 2.5px solid #6366f1; }}
-            .top-accent-emerald {{ border-top: 2.5px solid #10b981; }}
-            .top-accent-amber {{ border-top: 2.5px solid #f59e0b; }}
-            .top-accent-purple {{ border-top: 2.5px solid #c084fc; }}
-            .top-accent-rose {{ border-top: 2.5px solid #f43f5e; }}
-
-            .mono-num {{
-                font-family: 'JetBrains Mono', monospace;
-            }}
+            .mono-num {{ font-family: 'JetBrains Mono', monospace; }}
         </style>
     </head>
     <body class="p-0.5">
-        <div class="grid grid-cols-6 gap-2">
+        <div class="grid grid-cols-6 gap-2.5">
             <!-- 1. Ümumi Satış (TY) -->
-            <div class="glass-card top-accent-cyan">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">💰 Ümumi Satış (TY)</div>
-                <div class="text-xl font-extrabold text-white tracking-tight mt-1 mono-num">{format_currency_azn(total_sales_ty)}</div>
-                <div class="text-[10px] font-semibold text-cyan-400 mt-1">Cari Dövr Satışı</div>
+            <div class="metric-card">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">💰 Ümumi Satış (TY)</div>
+                <div class="text-xl font-extrabold text-blue-600 tracking-tight mt-1 mono-num">{format_currency_azn(total_sales_ty)}</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-1">Cari Dövr Satışı</div>
             </div>
 
             <!-- 2. Satış Miqdarı (Units) -->
-            <div class="glass-card top-accent-indigo">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">📦 Satış Miqdarı</div>
-                <div class="text-xl font-extrabold text-indigo-400 tracking-tight mt-1 mono-num">{total_qty_ty:,.0f}</div>
-                <div class="text-[10px] font-semibold text-slate-400 mt-1">Ümumi Ədəd</div>
+            <div class="metric-card">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">📦 Satış Miqdarı</div>
+                <div class="text-xl font-extrabold text-slate-800 tracking-tight mt-1 mono-num">{total_qty_ty:,.0f}</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-1">Ümumi Ədəd</div>
             </div>
 
             <!-- 3. Keçən Dövr Satışı (LY) -->
-            <div class="glass-card top-accent-purple">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">📊 Keçən İl (LY)</div>
-                <div class="text-xl font-extrabold text-slate-300 tracking-tight mt-1 mono-num">{format_currency_azn(total_sales_ly)}</div>
-                <div class="text-[10px] font-semibold text-slate-400 mt-1">Baza Müqayisəsi</div>
+            <div class="metric-card">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">📊 Keçən İl (LY)</div>
+                <div class="text-xl font-extrabold text-slate-600 tracking-tight mt-1 mono-num">{format_currency_azn(total_sales_ly)}</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-1">Baza Müqayisəsi</div>
             </div>
 
             <!-- 4. Satış Fərqi (Delta AZN) -->
-            <div class="glass-card {'top-accent-emerald' if delta_azn >= 0 else 'top-accent-rose'}">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">💵 Satış Fərqi</div>
-                <div class="text-xl font-extrabold {'text-emerald-400' if delta_azn >= 0 else 'text-rose-400'} tracking-tight mt-1 mono-num">{format_currency_azn(delta_azn)}</div>
-                <div class="text-[10px] font-semibold text-slate-400 mt-1">Fərq (TY vs LY)</div>
+            <div class="metric-card">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">💵 Satış Fərqi</div>
+                <div class="text-xl font-extrabold {'text-emerald-600' if delta_azn >= 0 else 'text-rose-600'} tracking-tight mt-1 mono-num">{format_currency_azn(delta_azn)}</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-1">Fərq (TY vs LY)</div>
             </div>
 
             <!-- 5. Artım / Azalma % -->
-            <div class="glass-card top-accent-emerald">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">📈 Artım / Azalma</div>
+            <div class="metric-card">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">📈 Artım / Azalma</div>
                 <div class="mt-1">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-extrabold border {growth_color} mono-num">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold border {growth_color} mono-num">
                         {growth_str}
                     </span>
                 </div>
-                <div class="text-[10px] font-semibold text-slate-400 mt-1">YoY İnkişaf</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-1">YoY İnkişaf</div>
             </div>
 
             <!-- 6. Orta Günlük Satış -->
-            <div class="glass-card top-accent-amber">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">⏱️ Orta Günlük Satış</div>
-                <div class="text-xl font-extrabold text-amber-400 tracking-tight mt-1 mono-num">{format_currency_azn(avg_daily_sales)}</div>
-                <div class="text-[10px] font-semibold text-slate-400 mt-1">Günlük Ortalaması</div>
+            <div class="metric-card">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">⏱️ Orta Günlük Satış</div>
+                <div class="text-xl font-extrabold text-indigo-600 tracking-tight mt-1 mono-num">{format_currency_azn(avg_daily_sales)}</div>
+                <div class="text-[10px] font-medium text-slate-400 mt-1">Günlük Ortalaması</div>
             </div>
         </div>
     </body>
     </html>
     """
-    components.html(html, height=88)
+    components.html(html, height=92)
 
 
 def render_apex_trend_dual_spline(df_ty: pd.DataFrame, df_ly: pd.DataFrame, granularity: str = "Günlük"):
-    """Row 2 Left: Sales Trend Dual Spline with multi-stop neon gradient fill and pulse markers."""
+    """Row 2 Left: Sales Trend Dual Spline with Light Theme Translucent Gradient."""
     if df_ty.empty:
         return
 
@@ -363,16 +269,15 @@ def render_apex_trend_dual_spline(df_ty: pd.DataFrame, df_ly: pd.DataFrame, gran
     <head>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <style>
-            body {{ background: transparent; margin: 0; font-family: 'Inter', sans-serif; }}
+            body {{ background: transparent; margin: 0; font-family: -apple-system, sans-serif; }}
             .card {{
-                background: rgba(18, 24, 38, 0.75);
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 10px;
-                padding: 12px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 14px;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
             }}
-            .card-title {{ color: #818cf8; font-size: 13px; font-weight: 700; margin-bottom: 6px; }}
+            .card-title {{ color: #1e3a8a; font-size: 13px; font-weight: 700; margin-bottom: 6px; }}
         </style>
     </head>
     <body>
@@ -387,19 +292,19 @@ def render_apex_trend_dual_spline(df_ty: pd.DataFrame, df_ly: pd.DataFrame, gran
                     {{ name: 'Keçən İl Satışı (LY)', data: {ly_json} }}
                 ],
                 chart: {{ type: 'area', height: 215, toolbar: {{ show: false }} }},
-                colors: ['#6366f1', '#38bdf8'],
+                colors: ['#2563EB', '#94A3B8'],
                 stroke: {{ curve: 'smooth', width: [3, 2], dashArray: [0, 4] }},
                 fill: {{
                     type: 'gradient',
-                    gradient: {{ shadeIntensity: 1, opacityFrom: 0.45, opacityTo: 0.05, stops: [0, 90, 100] }}
+                    gradient: {{ shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] }}
                 }},
-                markers: {{ size: [4, 0], colors: ['#6366f1'], strokeColors: '#ffffff', strokeWidth: 2, hover: {{ size: 7 }} }},
+                markers: {{ size: [4, 0], colors: ['#2563EB'], strokeColors: '#ffffff', strokeWidth: 2, hover: {{ size: 7 }} }},
                 dataLabels: {{ enabled: false }},
-                xaxis: {{ categories: {dates_json}, labels: {{ style: {{ colors: '#94a3b8', fontSize: '9px' }} }} }},
+                xaxis: {{ categories: {dates_json}, labels: {{ style: {{ colors: '#64748b', fontSize: '9px' }} }} }},
                 yaxis: {{ labels: {{ show: false }} }},
-                grid: {{ show: false }},
-                legend: {{ position: 'top', horizontalAlign: 'right', labels: {{ colors: '#94a3b8' }} }},
-                tooltip: {{ theme: 'dark', y: {{ formatter: function(val) {{ return val.toLocaleString() + ' ₼'; }} }} }}
+                grid: {{ borderColor: '#f1f5f9' }},
+                legend: {{ position: 'top', horizontalAlign: 'right', labels: {{ colors: '#475569' }} }},
+                tooltip: {{ theme: 'light', y: {{ formatter: function(val) {{ return val.toLocaleString() + ' ₼'; }} }} }}
             }};
             var chart = new ApexCharts(document.querySelector("#chart"), options);
             chart.render();
@@ -411,7 +316,7 @@ def render_apex_trend_dual_spline(df_ty: pd.DataFrame, df_ly: pd.DataFrame, gran
 
 
 def render_apex_store_share_donut(df: pd.DataFrame):
-    """Row 2 Right: Region / Mağaza Satış Payı % Donut with custom dark glass tooltip."""
+    """Row 2 Right: Region / Mağaza Satış Payı % Donut with Light Enterprise Theme."""
     if df.empty:
         return
 
@@ -436,16 +341,15 @@ def render_apex_store_share_donut(df: pd.DataFrame):
     <head>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <style>
-            body {{ background: transparent; margin: 0; font-family: 'Inter', sans-serif; }}
+            body {{ background: transparent; margin: 0; font-family: -apple-system, sans-serif; }}
             .card {{
-                background: rgba(18, 24, 38, 0.75);
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 10px;
-                padding: 12px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 14px;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
             }}
-            .card-title {{ color: #38bdf8; font-size: 13px; font-weight: 700; margin-bottom: 6px; }}
+            .card-title {{ color: #1d4ed8; font-size: 13px; font-weight: 700; margin-bottom: 6px; }}
         </style>
     </head>
     <body>
@@ -458,7 +362,7 @@ def render_apex_store_share_donut(df: pd.DataFrame):
                 series: {values_json},
                 labels: {labels_json},
                 chart: {{ type: 'donut', height: 215 }},
-                colors: ['#00f2fe', '#6366f1', '#10b981', '#f59e0b', '#c084fc'],
+                colors: ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899'],
                 stroke: {{ show: false }},
                 plotOptions: {{
                     pie: {{
@@ -469,16 +373,16 @@ def render_apex_store_share_donut(df: pd.DataFrame):
                                 total: {{
                                     show: true,
                                     label: 'Total Share',
-                                    color: '#94a3b8',
+                                    color: '#64748b',
                                     formatter: function () {{ return '{format_currency_azn(total_rev)}'; }}
                                 }}
                             }}
                         }}
                     }}
                 }},
-                legend: {{ position: 'right', fontSize: '9px', labels: {{ colors: '#94a3b8' }} }},
+                legend: {{ position: 'right', fontSize: '9px', labels: {{ colors: '#475569' }} }},
                 dataLabels: {{ enabled: false }},
-                tooltip: {{ theme: 'dark' }}
+                tooltip: {{ theme: 'light' }}
             }};
             var chart = new ApexCharts(document.querySelector("#chart"), options);
             chart.render();
@@ -490,7 +394,7 @@ def render_apex_store_share_donut(df: pd.DataFrame):
 
 
 def render_apex_top_bottom_skus(df: pd.DataFrame, top_n: int = 10, mode: str = "TOP"):
-    """Row 4: TOP vs BOTTOM SKUs Horizontal Progress Leaderboard with rounded pill ends."""
+    """Row 4: TOP vs BOTTOM SKUs Horizontal Progress Leaderboard."""
     if df.empty:
         return
 
@@ -499,12 +403,12 @@ def render_apex_top_bottom_skus(df: pd.DataFrame, top_n: int = 10, mode: str = "
     if mode == "TOP":
         agg = agg.sort_values("GROSS_REVENUE", ascending=False).head(top_n)
         agg = agg.sort_values("GROSS_REVENUE", ascending=True)
-        bar_color = "#00f2fe"
+        bar_color = "#2563EB"
         title = f"🟢 TOP {top_n} Best Selling Products"
     else:
         agg = agg.sort_values("GROSS_REVENUE", ascending=True).head(top_n)
         agg = agg.sort_values("GROSS_REVENUE", ascending=False)
-        bar_color = "#ef4444"
+        bar_color = "#EF4444"
         title = f"🔴 BOTTOM {top_n} Declining / Lowest Volume Products"
 
     agg["DISPLAY_NAME"] = agg["MEHSUL_ADI"].apply(lambda s: str(s)[:22] + "..." if len(str(s)) > 24 else str(s))
@@ -518,16 +422,15 @@ def render_apex_top_bottom_skus(df: pd.DataFrame, top_n: int = 10, mode: str = "
     <head>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <style>
-            body {{ background: transparent; margin: 0; font-family: 'Inter', sans-serif; }}
+            body {{ background: transparent; margin: 0; font-family: -apple-system, sans-serif; }}
             .card {{
-                background: rgba(18, 24, 38, 0.75);
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 10px;
-                padding: 12px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 14px;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
             }}
-            .card-title {{ color: {'#00f2fe' if mode == 'TOP' else '#ef4444'}; font-size: 13px; font-weight: 700; margin-bottom: 6px; }}
+            .card-title {{ color: {'#1d4ed8' if mode == 'TOP' else '#b91c1c'}; font-size: 13px; font-weight: 700; margin-bottom: 6px; }}
         </style>
     </head>
     <body>
@@ -542,10 +445,10 @@ def render_apex_top_bottom_skus(df: pd.DataFrame, top_n: int = 10, mode: str = "
                 plotOptions: {{ bar: {{ horizontal: true, borderRadius: 6, barHeight: '65%' }} }},
                 colors: ['{bar_color}'],
                 dataLabels: {{ enabled: true, formatter: function(val) {{ return val.toLocaleString() + ' ₼'; }}, style: {{ colors: ['#ffffff'], fontSize: '9px' }} }},
-                xaxis: {{ categories: {categories_json}, labels: {{ style: {{ colors: '#94a3b8' }}, fontSize: '9px' }} }},
-                yaxis: {{ labels: {{ style: {{ colors: '#94a3b8', fontSize: '9px' }} }} }},
-                grid: {{ show: false }},
-                tooltip: {{ theme: 'dark', y: {{ formatter: function(val) {{ return val.toLocaleString() + ' ₼'; }} }} }}
+                xaxis: {{ categories: {categories_json}, labels: {{ show: false }} }},
+                yaxis: {{ labels: {{ style: {{ colors: '#475569', fontSize: '9px' }} }} }},
+                grid: {{ borderColor: '#f1f5f9' }},
+                tooltip: {{ theme: 'light', y: {{ formatter: function(val) {{ return val.toLocaleString() + ' ₼'; }} }} }}
             }};
             var chart = new ApexCharts(document.querySelector("#chart"), options);
             chart.render();

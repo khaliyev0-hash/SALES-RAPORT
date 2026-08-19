@@ -1,6 +1,6 @@
 """
 High-Density Executive Analytics Visuals Engine
-Includes Product Velocity Quadrant Matrix, Insert/Promotion Charts, Supplier Analytics & Risk Radar
+Light Enterprise SaaS Theme (Apple / Stripe / Power BI Light Theme Inspired)
 """
 
 import numpy as np
@@ -10,28 +10,29 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 
-COLOR_BG_DARK = "#070A13"
-COLOR_CARD = "#121826"
-COLOR_TEXT_MAIN = "#f8fafc"
-COLOR_TEXT_MUTED = "#94a3b8"
+COLOR_TEXT_MAIN = "#0F172A"
+COLOR_TEXT_MUTED = "#64748B"
+COLOR_GRID = "rgba(0, 0, 0, 0.05)"
 
 
-def apply_dark_theme(fig: go.Figure, height: int = 280, **kwargs) -> go.Figure:
-    """Applies ultra-clean Plotly dark theme with smooth 500ms transitions."""
+def apply_light_theme(fig: go.Figure, height: int = 280, **kwargs) -> go.Figure:
+    """Applies ultra-clean Plotly light theme with crisp white card wrappers."""
     theme = dict(
-        template="plotly_dark",
+        template="plotly_white",
         height=height,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(color=COLOR_TEXT_MAIN, family="Inter, -apple-system, sans-serif", size=10),
+        font=dict(color=COLOR_TEXT_MAIN, family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", size=10),
         xaxis=dict(
-            showgrid=False,
+            showgrid=True,
+            gridcolor=COLOR_GRID,
             zeroline=False,
             tickfont=dict(color=COLOR_TEXT_MUTED, size=9),
             title="",
         ),
         yaxis=dict(
-            showgrid=False,
+            showgrid=True,
+            gridcolor=COLOR_GRID,
             zeroline=False,
             tickfont=dict(color=COLOR_TEXT_MUTED, size=9),
             title="",
@@ -60,17 +61,17 @@ def create_day_of_week_chart(df: pd.DataFrame) -> go.Figure:
         go.Bar(
             x=agg["DOW_NAME"],
             y=agg["GROSS_REVENUE"],
-            marker=dict(color=agg["GROSS_REVENUE"], colorscale="Viridis", showscale=False),
+            marker=dict(color="#2563EB", cornerradius=4),
             text=agg["GROSS_REVENUE"].apply(lambda v: f"{v:,.0f} ₼"),
             textposition="outside",
             hovertemplate="<b>Gün:</b> %{x}<br><b>Satış:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=260,
-        title=dict(text="<b>📅 Haftalık Günlük Satış Nümunəsi (Peak Sales Days)</b>", font=dict(size=13, color="#38bdf8")),
+        title=dict(text="<b>📅 Haftalık Günlük Satış Nümunəsi (Peak Sales Days)</b>", font=dict(size=13, color="#1E40AF")),
         yaxis=dict(showticklabels=False)
     )
     return fig
@@ -86,28 +87,28 @@ def create_store_ranking_chart(df: pd.DataFrame, top_n: int = 10, mode: str = "T
     if mode in ["Top", "Ən Yaxşı"]:
         agg = agg.sort_values("GROSS_REVENUE", ascending=False).head(top_n)
         agg = agg.sort_values("GROSS_REVENUE", ascending=True)
-        colorscale = "Purples"
+        bar_color = "#3B82F6"
     else:
         agg = agg.sort_values("GROSS_REVENUE", ascending=True).head(top_n)
         agg = agg.sort_values("GROSS_REVENUE", ascending=False)
-        colorscale = "Reds"
+        bar_color = "#EF4444"
 
     fig = go.Figure(
         go.Bar(
             x=agg["GROSS_REVENUE"],
             y=agg["STORE_NAME"],
             orientation="h",
-            marker=dict(color=agg["GROSS_REVENUE"], colorscale=colorscale, showscale=False),
+            marker=dict(color=bar_color, cornerradius=4),
             text=agg["GROSS_REVENUE"].apply(lambda v: f"{v:,.0f} ₼"),
             textposition="inside",
             hovertemplate="<b>Mağaza:</b> %{y}<br><b>Satış:</b> <b>%{x:,.2f} ₼</b><extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=300,
-        title=dict(text=f"<b>Mağaza Gəlir Reytinqi ({mode} {top_n})</b>", font=dict(size=13, color="#c084fc"))
+        title=dict(text=f"<b>Mağaza Gəlir Reytinqi ({mode} {top_n})</b>", font=dict(size=13, color="#1D4ED8"))
     )
     return fig
 
@@ -124,13 +125,13 @@ def create_store_treemap(df: pd.DataFrame) -> go.Figure:
         path=[px.Constant("Bütün Kateqoriyalar"), "QRUP", "FAMILY NAME", "CATEGORY NAME"],
         values="REVENUE",
         color="REVENUE",
-        color_continuous_scale="Tealgrn"
+        color_continuous_scale="Blues"
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=300,
-        title=dict(text="<b>QRUP və Kateqoriya Paylanma Treemap-i</b>", font=dict(size=13, color="#38bdf8")),
+        title=dict(text="<b>QRUP və Kateqoriya Paylanma Treemap-i</b>", font=dict(size=13, color="#1D4ED8")),
         margin=dict(l=10, r=10, t=35, b=10)
     )
     return fig
@@ -154,7 +155,7 @@ def create_pareto_chart(df: pd.DataFrame) -> go.Figure:
             x=agg["CATEGORY NAME"],
             y=agg["GROSS_REVENUE"],
             name="Satış (AZN)",
-            marker_color="#6366f1",
+            marker_color="#2563EB",
             hovertemplate="<b>Kateqoriya:</b> %{x}<br><b>Satış:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
         ),
         secondary_y=False
@@ -166,19 +167,19 @@ def create_pareto_chart(df: pd.DataFrame) -> go.Figure:
             y=agg["CUM_PCT"],
             name="Kumulyativ %",
             mode="lines+markers",
-            line=dict(color="#f59e0b", width=2.5),
-            marker=dict(size=6, color="#ffffff"),
+            line=dict(color="#F59E0B", width=2.5),
+            marker=dict(size=6, color="#1E293B"),
             hovertemplate="<b>Kateqoriya:</b> %{x}<br><b>Kumulyativ %:</b> <b>%{y:.1f}%</b><extra></extra>"
         ),
         secondary_y=True
     )
 
-    fig.add_hline(y=80, line_dash="dash", line_color="#ef4444", annotation_text="80% Baza Sərhədi", secondary_y=True)
+    fig.add_hline(y=80, line_dash="dash", line_color="#EF4444", annotation_text="80% Baza Sərhədi", secondary_y=True)
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=300,
-        title=dict(text="<b>Pareto 80/20 & ABC Kateqoriya Analizi</b>", font=dict(size=13, color="#6366f1")),
+        title=dict(text="<b>Pareto 80/20 & ABC Kateqoriya Analizi</b>", font=dict(size=13, color="#1D4ED8")),
         showlegend=False
     )
 
@@ -210,16 +211,17 @@ def create_product_velocity_quadrant(df: pd.DataFrame) -> go.Figure:
         color="CATEGORY NAME",
         hover_name="MEHSUL_ADI",
         size_max=30,
+        color_discrete_sequence=["#2563EB", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"],
         labels={"TOTAL_QTY": "Satış Miqdarı (Ədəd)", "TOTAL_REV": "Ümumi Satış (AZN)"}
     )
 
-    fig.add_vline(x=median_qty, line_dash="dash", line_color="rgba(255,255,255,0.3)")
-    fig.add_hline(y=median_rev, line_dash="dash", line_color="rgba(255,255,255,0.3)")
+    fig.add_vline(x=median_qty, line_dash="dash", line_color="rgba(0,0,0,0.2)")
+    fig.add_hline(y=median_rev, line_dash="dash", line_color="rgba(0,0,0,0.2)")
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=320,
-        title=dict(text="<b>⚡ Product Velocity & 4-Quadrant Matrix (Star vs Cash Cows)</b>", font=dict(size=13, color="#00f2fe")),
+        title=dict(text="<b>⚡ Product Velocity & 4-Quadrant Matrix (Star vs Cash Cows)</b>", font=dict(size=13, color="#1D4ED8")),
         showlegend=False
     )
     return fig
@@ -239,17 +241,17 @@ def create_top_suppliers_chart(df: pd.DataFrame, top_n: int = 10) -> go.Figure:
             x=agg["GROSS_REVENUE"],
             y=agg["SATICI ADI"],
             orientation="h",
-            marker=dict(color=agg["GROSS_REVENUE"], colorscale="Teal", showscale=False),
+            marker=dict(color="#0D9488", cornerradius=4),
             text=agg["GROSS_REVENUE"].apply(lambda v: f"{v:,.0f} ₼"),
             textposition="inside",
             hovertemplate="<b>Təchizatçı:</b> %{y}<br><b>Satış:</b> <b>%{x:,.2f} ₼</b><extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=300,
-        title=dict(text=f"<b>🏭 Top {top_n} Təchizatçı Liderlik Paneli (Satış AZN)</b>", font=dict(size=13, color="#2dd4bf")),
+        title=dict(text=f"<b>🏭 Top {top_n} Təchizatçı Liderlik Paneli (Satış AZN)</b>", font=dict(size=13, color="#0F766E")),
         margin=dict(l=140, r=20, t=35, b=10)
     )
     return fig
@@ -276,20 +278,20 @@ def create_supplier_concentration_donut_chart(df: pd.DataFrame) -> go.Figure:
             labels=agg_final["SATICI ADI"],
             values=agg_final["GROSS_REVENUE"],
             hole=0.6,
-            marker=dict(colors=["#2dd4bf", "#38bdf8", "#818cf8", "#c084fc", "#fb923c", "#94a3b8"]),
+            marker=dict(colors=["#2563EB", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#94A3B8"]),
             textinfo="percent",
             textposition="inside",
             hovertemplate="<b>Təchizatçı:</b> %{label}<br><b>Satış:</b> <b>%{value:,.2f} ₼</b> (%{percent})<extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=300,
-        title=dict(text="<b>🍩 Təchizatçı Gəlir Cəmləşməsi (Top 5 vs Digər)</b>", font=dict(size=13, color="#2dd4bf")),
+        title=dict(text="<b>🍩 Təchizatçı Gəlir Cəmləşməsi (Top 5 vs Digər)</b>", font=dict(size=13, color="#1D4ED8")),
         annotations=[
             dict(
-                text=f"<b>Ümumi</b><br><span style='font-size:12px; color:#ffffff;'>{total_rev:,.0f} ₼</span>",
+                text=f"<b>Ümumi</b><br><span style='font-size:12px; color:#0F172A;'>{total_rev:,.0f} ₼</span>",
                 x=0.5, y=0.5, font_size=10, showarrow=False
             )
         ],
@@ -319,7 +321,7 @@ def create_insert_sales_comparison_chart(df: pd.DataFrame) -> go.Figure:
             x=agg["DATE"],
             y=agg["STANDARD_REV"],
             name="Standart Satış",
-            marker_color="#6366f1",
+            marker_color="#2563EB",
             hovertemplate="<b>Tarix:</b> %{x}<br><b>Standart Satış:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
         )
     )
@@ -329,15 +331,15 @@ def create_insert_sales_comparison_chart(df: pd.DataFrame) -> go.Figure:
             x=agg["DATE"],
             y=agg["INSERT_REV"],
             name="İnser / Promosiya Satışı",
-            marker_color="#f43f5e",
+            marker_color="#E11D48",
             hovertemplate="<b>Tarix:</b> %{x}<br><b>İnser Satış:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=290,
-        title=dict(text="<b> Standart Satış vs İnser Promosiya Satış Dinamikası</b>", font=dict(size=13, color="#f43f5e")),
+        title=dict(text="<b> Standart Satış vs İnser Promosiya Satış Dinamikası</b>", font=dict(size=13, color="#BE123C")),
         barmode="stack",
         yaxis=dict(showticklabels=False)
     )
@@ -360,17 +362,17 @@ def create_top_insert_products_chart(df: pd.DataFrame, top_n: int = 10) -> go.Fi
             x=agg["INSERT_SATIS_EDV"],
             y=agg["DISPLAY_NAME"],
             orientation="h",
-            marker=dict(color="#f43f5e", line=dict(color="#fb7185", width=1)),
+            marker=dict(color="#E11D48", cornerradius=4),
             text=agg["INSERT_SATIS_EDV"].apply(lambda v: f"{v:,.0f} ₼"),
             textposition="outside",
             hovertemplate="<b>Məhsul:</b> %{y}<br><b>İnser Satışı:</b> <b>%{x:,.2f} ₼</b><extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=290,
-        title=dict(text=f"<b> Top {top_n} İnser Promosiya Məhsulları</b>", font=dict(size=13, color="#fb7185")),
+        title=dict(text=f"<b> Top {top_n} İnser Promosiya Məhsulları</b>", font=dict(size=13, color="#BE123C")),
         xaxis=dict(showticklabels=False),
         margin=dict(l=110, r=40, t=35, b=10)
     )
@@ -405,17 +407,17 @@ def create_waterfall_contribution_chart(df_ty: pd.DataFrame, df_ly: pd.DataFrame
             measure=measures,
             x=x_vals,
             y=y_vals,
-            connector=dict(line=dict(color="rgba(255,255,255,0.2)")),
-            increasing=dict(marker=dict(color="#10b981")),
-            decreasing=dict(marker=dict(color="#ef4444")),
-            totals=dict(marker=dict(color="#6366f1"))
+            connector=dict(line=dict(color="rgba(0,0,0,0.15)")),
+            increasing=dict(marker=dict(color="#10B981")),
+            decreasing=dict(marker=dict(color="#EF4444")),
+            totals=dict(marker=dict(color="#2563EB"))
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=300,
-        title=dict(text="<b>Gəlir Fərqinə Ən Çox Töhfə Verən Kateqoriyalar (Waterfall)</b>", font=dict(size=13, color="#10b981"))
+        title=dict(text="<b>Gəlir Fərqinə Ən Çox Töhfə Verən Kateqoriyalar (Waterfall)</b>", font=dict(size=13, color="#047857"))
     )
     return fig
 
@@ -439,7 +441,7 @@ def create_basket_analytics_chart(df: pd.DataFrame) -> go.Figure:
             x=agg["DATE"],
             y=agg["EDV_INCL"],
             name="ƏDV Daxil Satış",
-            marker_color="#38bdf8",
+            marker_color="#2563EB",
             hovertemplate="<b>Tarix:</b> %{x}<br><b>ƏDV Daxil:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
         )
     )
@@ -449,15 +451,15 @@ def create_basket_analytics_chart(df: pd.DataFrame) -> go.Figure:
             x=agg["DATE"],
             y=agg["EDV_EXCL"],
             name="ƏDV-siz Satış (Maya/Net)",
-            marker_color="#818cf8",
+            marker_color="#64748B",
             hovertemplate="<b>Tarix:</b> %{x}<br><b>ƏDV Xaric:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
         )
     )
 
-    apply_dark_theme(
+    apply_light_theme(
         fig,
         height=280,
-        title=dict(text="<b>ƏDV Daxil və ƏDV-siz Satış Fərq Analizi</b>", font=dict(size=13, color="#38bdf8")),
+        title=dict(text="<b>ƏDV Daxil və ƏDV-siz Satış Fərq Analizi</b>", font=dict(size=13, color="#1D4ED8")),
         barmode="group",
         yaxis=dict(showticklabels=False)
     )
