@@ -1,7 +1,7 @@
 """
 Queries & Data Loader Engine (Optimized Single Store 110 Test View)
 Fetches targeted data for Store 110 directly in SQL Server for sub-second loading speed
-with safe column alias standardization, Insert / Promotion columns, and Supplier / Risk Status metadata.
+with safe parameterized SQL execution, safe column alias standardization, Insert / Promotion columns, and Supplier / Risk Status metadata.
 """
 
 import datetime
@@ -91,14 +91,15 @@ def standardize_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
 @st.cache_data(ttl=600, show_spinner=False)
 def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, store_id: str = "110") -> tuple[pd.DataFrame, bool, str, str | None]:
     """
-    Executes targeted SQL query for 1 Store (Store 110) directly in SQL Server for ultra-fast loading speed.
+    Executes targeted parameterized SQL query for 1 Store (Store 110) directly in SQL Server.
+    SQL Injection Safe via parameterized pyodbc placeholders.
     """
     is_connected, status_msg, driver, connection_diag_log = get_db_status()
     start_str = start_date.strftime("%Y-%m-%d")
     end_str = end_date.strftime("%Y-%m-%d")
 
     if is_connected:
-        sql = f"""
+        sql = """
         SELECT TOP 10000
             CAST(MAGAZA AS VARCHAR(50)) AS STORE_NAME,
             CAST(MAGAZA AS VARCHAR(50)) AS STORE_ID,
@@ -131,10 +132,11 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
             TARIX AS SALES_DATE,
             TARIX AS TARIX,
             12 AS HOUR
-        FROM fnc_TS_SALES_REPORT_FOR_PLANNING_UNION('{start_str}', '{end_str}')
-        WHERE MAGAZA = '{store_id}'
+        FROM fnc_TS_SALES_REPORT_FOR_PLANNING_UNION(?, ?)
+        WHERE MAGAZA = ?
         """
-        df, err = execute_query(sql)
+        df, err = execute_query(sql, params=(start_str, end_str, store_id))
+        
         if err is None and not df.empty:
             df = standardize_dataframe_columns(df)
             df["SALES_DATE"] = pd.to_datetime(df["SALES_DATE"])
@@ -143,7 +145,7 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
             df["TRANSACTION_ID"] = ["TRX-" + str(i) for i in range(100000, 100000 + len(df))]
             return df, True, f"Connected to SQL Server. Loaded {len(df):,} targeted rows for Store {store_id}", None
         elif err:
-            sql_fallback = f"""
+            sql_fallback = """
             SELECT TOP 5000
                 CAST(MAGAZA AS VARCHAR(50)) AS STORE_NAME,
                 CAST(MAGAZA AS VARCHAR(50)) AS STORE_ID,
@@ -176,9 +178,9 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
                 TARIX AS SALES_DATE,
                 TARIX AS TARIX,
                 12 AS HOUR
-            FROM fnc_TS_SALES_REPORT_FOR_PLANNING_UNION('{start_str}', '{end_str}')
+            FROM fnc_TS_SALES_REPORT_FOR_PLANNING_UNION(?, ?)
             """
-            df_f, err_f = execute_query(sql_fallback)
+            df_f, err_f = execute_query(sql_fallback, params=(start_str, end_str))
             if err_f is None and not df_f.empty:
                 df_f = standardize_dataframe_columns(df_f)
                 df_f["SALES_DATE"] = pd.to_datetime(df_f["SALES_DATE"])
