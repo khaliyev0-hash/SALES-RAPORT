@@ -226,26 +226,25 @@ def inject_global_theme_css():
 
         /* =======================================================
            2. FIX UNREADABLE TABS & REMOVE DEFAULT RED UNDERLINE
-           (Broadened selectors to cover multiple Streamlit/BaseWeb DOM
-           variants: button[role=tab] AND [data-baseweb=tab], plus any
-           nested <p>/<span>/<div> label wrapper.)
+           (Rewritten against the ACTUAL rendered DOM confirmed via
+           DevTools: tabs are <div data-testid="stTab" role="tab">,
+           NOT <button>. Label text lives in
+           div[data-testid="stMarkdownContainer"] > p. Selected state
+           uses aria-selected="true" AND data-selected="true".)
            ======================================================= */
-        /* Kill red underline highlight */
-        div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
-        div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
+        /* Kill the pink/red pill selection indicator */
+        div[role="tablist"] .react-aria-SelectionIndicator {
             display: none !important;
-            background-color: transparent !important;
-            height: 0px !important;
+            background: transparent !important;
         }
 
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+        div[role="tablist"] {
             gap: 4px !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
 
-        /* Base style for ALL tab buttons */
-        div[data-testid="stTabs"] button[role="tab"],
-        div[data-testid="stTabs"] [data-baseweb="tab"] {
+        /* Base style for ALL tab pills */
+        div[data-testid="stTab"][role="tab"] {
             background: rgba(15, 23, 42, 0.9) !important;
             border: 1px solid rgba(0, 242, 254, 0.25) !important;
             border-radius: 8px 8px 0 0 !important;
@@ -255,17 +254,12 @@ def inject_global_theme_css():
         }
 
         /* ---------------------------------------------------------
-           GUARANTEED READABILITY LAYER (fires first, wins ties via
-           high selector specificity + !important, and covers every
-           possible label wrapper: p, span, div, text nodes via *).
-           This alone fixes readability even if the DOM structure
-           doesn't match the fancy per-tab coloring rules below.
+           GUARANTEED READABILITY LAYER: force every tab's paragraph
+           text to a bright, high-contrast color no matter what.
            --------------------------------------------------------- */
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"],
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] p,
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] span,
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] div,
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] * {
+        div[data-testid="stTab"][role="tab"] p,
+        div[data-testid="stTab"][role="tab"] [data-testid="stMarkdownContainer"],
+        div[data-testid="stTab"][role="tab"] [data-testid="stMarkdownContainer"] * {
             color: #7DD3FC !important;
             -webkit-text-fill-color: #7DD3FC !important;
             opacity: 1 !important;
@@ -275,45 +269,30 @@ def inject_global_theme_css():
         }
 
         /* ---------------------------------------------------------
-           OPTIONAL COLORFUL LAYER: applies a distinct accent per tab
-           by targeting DIRECT children of the tab-list (more reliable
-           positional indexing than nth-of-type on nested elements).
-           Falls back gracefully to the layer above if this doesn't
-           match the live DOM.
+           COLORFUL LAYER: distinct accent per tab, using the real
+           direct-child relationship div[role="tablist"] > div[data-testid="stTab"].
            --------------------------------------------------------- */
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(1),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(1) * { color: #38BDF8 !important; -webkit-text-fill-color: #38BDF8 !important; text-shadow: 0 0 8px rgba(56,189,248,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(2),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(2) * { color: #22D3EE !important; -webkit-text-fill-color: #22D3EE !important; text-shadow: 0 0 8px rgba(34,211,238,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(3),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(3) * { color: #C4B5FD !important; -webkit-text-fill-color: #C4B5FD !important; text-shadow: 0 0 8px rgba(196,181,253,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(4),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(4) * { color: #F9A8D4 !important; -webkit-text-fill-color: #F9A8D4 !important; text-shadow: 0 0 8px rgba(249,168,212,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(5),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(5) * { color: #FCD34D !important; -webkit-text-fill-color: #FCD34D !important; text-shadow: 0 0 8px rgba(252,211,77,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(6),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(6) * { color: #6EE7B7 !important; -webkit-text-fill-color: #6EE7B7 !important; text-shadow: 0 0 8px rgba(110,231,183,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(7),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(7) * { color: #FDBA74 !important; -webkit-text-fill-color: #FDBA74 !important; text-shadow: 0 0 8px rgba(253,186,116,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(8),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(8) * { color: #FCA5A5 !important; -webkit-text-fill-color: #FCA5A5 !important; text-shadow: 0 0 8px rgba(252,165,165,0.9) !important; }
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(9),
-        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(9) * { color: #A5B4FC !important; -webkit-text-fill-color: #A5B4FC !important; text-shadow: 0 0 8px rgba(165,180,252,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(1) p { color: #38BDF8 !important; -webkit-text-fill-color: #38BDF8 !important; text-shadow: 0 0 8px rgba(56,189,248,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(2) p { color: #22D3EE !important; -webkit-text-fill-color: #22D3EE !important; text-shadow: 0 0 8px rgba(34,211,238,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(3) p { color: #C4B5FD !important; -webkit-text-fill-color: #C4B5FD !important; text-shadow: 0 0 8px rgba(196,181,253,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(4) p { color: #F9A8D4 !important; -webkit-text-fill-color: #F9A8D4 !important; text-shadow: 0 0 8px rgba(249,168,212,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(5) p { color: #FCD34D !important; -webkit-text-fill-color: #FCD34D !important; text-shadow: 0 0 8px rgba(252,211,77,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(6) p { color: #6EE7B7 !important; -webkit-text-fill-color: #6EE7B7 !important; text-shadow: 0 0 8px rgba(110,231,183,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(7) p { color: #FDBA74 !important; -webkit-text-fill-color: #FDBA74 !important; text-shadow: 0 0 8px rgba(253,186,116,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(8) p { color: #FCA5A5 !important; -webkit-text-fill-color: #FCA5A5 !important; text-shadow: 0 0 8px rgba(252,165,165,0.9) !important; }
+        div[role="tablist"] > div[data-testid="stTab"]:nth-child(9) p { color: #A5B4FC !important; -webkit-text-fill-color: #A5B4FC !important; text-shadow: 0 0 8px rgba(165,180,252,0.9) !important; }
 
         /* Active / Selected Tab (Bright White text on Electric Cyan border) */
-        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
-        div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+        div[data-testid="stTab"][role="tab"][aria-selected="true"],
+        div[data-testid="stTab"][role="tab"][data-selected="true"] {
             background: linear-gradient(180deg, rgba(0, 242, 254, 0.35), rgba(15, 23, 42, 0.95)) !important;
             border: 1px solid #00F2FE !important;
             border-bottom: 3px solid #00F2FE !important;
             box-shadow: 0 0 18px rgba(0, 242, 254, 0.5) !important;
         }
 
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"],
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] p,
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] span,
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] div,
-        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] * {
+        div[data-testid="stTab"][role="tab"][aria-selected="true"] p,
+        div[data-testid="stTab"][role="tab"][data-selected="true"] p {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
