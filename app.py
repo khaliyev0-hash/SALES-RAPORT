@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Theme Engine (Strict Tab Fix Override)
+High-Tech Cosmic Dark & Neon Glow Architecture (Enterprise SaaS Overhaul)
 """
 
 import io
@@ -20,6 +20,9 @@ from js_components import (
     render_apex_sales_wave,
     render_echarts_hollow_donut,
     render_apex_horizontal_bars,
+    render_glassmorphic_store_ranking_table,
+    render_glassmorphic_supplier_leadership_table,
+    render_glassmorphic_risk_radar_table,
 )
 from visuals import (
     create_day_of_week_chart,
@@ -43,17 +46,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Inject Global Theme
+# Inject Global Theme & Zero-Leak Dark Glass Styling
 inject_global_theme_css()
 
-# High-Specificity Cosmic Dark & Neon Glow CSS (Strict Tab Fix Override)
+# High-Specificity Cosmic Dark & Neon Glow CSS Overrides
 st.markdown(
     """
     <style>
-    /* --- Deep Cosmic Canvas --- */
-    html, body, [data-testid="stAppViewContainer"], .stApp {
-        background: radial-gradient(circle at 50% 0%, #0F172A 0%, #070A13 75%) !important;
+    /* --- 1. Global Reset & Hard Lock --- */
+    :root {
+        color-scheme: dark !important;
+    }
+
+    html, body, [data-testid="stAppViewContainer"], .stApp, [data-testid="stSidebar"], section[data-testid="stSidebar"] {
         background-color: #070A13 !important;
+        background: radial-gradient(circle at 50% 0%, #0F172A 0%, #070A13 75%) !important;
         color: #F8FAFC !important;
     }
 
@@ -64,203 +71,97 @@ st.markdown(
         box-shadow: 10px 0 25px rgba(0, 0, 0, 0.5) !important;
     }
 
-    /* --- Glassmorphic Containers & Cards --- */
-    div[data-testid="stVerticalBlock"] > div:has(.metric-card),
-    .cyber-card, .metric-card,
-    div[data-testid="stMetric"],
-    .header-container {
-        background: rgba(15, 23, 42, 0.75) !important;
-        backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 14px !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37) !important;
-        color: #F8FAFC !important;
-        transition: all 0.3s ease !important;
+    /* --- 2. Remove Excel-like Table Look (Modern Dark Glass Tables) --- */
+    div[data-testid="stDataFrame"], div[data-testid="stTable"] {
+        border: 1px solid rgba(0, 242, 254, 0.25) !important;
+        border-radius: 12px !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+        overflow: hidden !important;
     }
 
-    .cyber-card:hover, .metric-card:hover {
-        transform: translateY(-3px) !important;
-        border-color: rgba(0, 242, 254, 0.4) !important;
-        box-shadow: 0 10px 25px rgba(0, 242, 254, 0.2) !important;
-    }
-
-    /* --- KPI Values & Badges --- */
-    .metric-value, [data-testid="stMetricValue"] {
-        color: #00F2FE !important;
-        text-shadow: 0 0 12px rgba(0, 242, 254, 0.6) !important;
-        font-weight: 800 !important;
-    }
-
-    /* =======================================================
-       3. PERMANENT BRIGHT NEON CYAN FOR ALL TAB TITLES (STRICT FIX)
-       ======================================================= */
-    /* Tab Header Container & Bar */
-    div[data-testid="stTabs"] > div[role="tablist"],
-    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
-        background: transparent !important;
-        gap: 6px !important;
-        border-bottom: 1px solid rgba(0, 242, 254, 0.25) !important;
-    }
-
-    /* Remove default Streamlit Red Underline bar completely */
-    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
-    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
-        display: none !important;
-        background-color: transparent !important;
-        height: 0px !important;
-    }
-
-    /* ALL TAB BUTTONS (BASE / INACTIVE STATE) */
-    div[data-testid="stTabs"] button,
-    div[data-testid="stTabs"] button[role="tab"],
-    div[data-testid="stTabs"] [data-baseweb="tab"] {
-        background: rgba(15, 23, 42, 0.85) !important;
-        background-color: #0F172A !important;
+    /* --- 3. Fix ALL Inputs, Selectboxes, Dropdowns & Popups (No White Bleed) --- */
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="input"],
+    div[data-baseweb="base-input"],
+    .stDateInput input,
+    div[data-testid="stFileUploader"] {
+        background-color: #101726 !important;
+        background: #101726 !important;
         border: 1px solid rgba(0, 242, 254, 0.35) !important;
+        border-radius: 8px !important;
+        color: #F8FAFC !important;
+    }
+
+    /* Dropdown Popup Menus & List Items */
+    ul[data-baseweb="menu"], div[data-baseweb="popover"], div[role="listbox"] {
+        background-color: #0F172A !important;
+        border: 1px solid rgba(0, 242, 254, 0.3) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+    }
+
+    li[data-baseweb="menu-item"], div[role="option"] {
+        background-color: transparent !important;
+        color: #E2E8F0 !important;
+    }
+
+    li[data-baseweb="menu-item"]:hover, div[role="option"]:hover {
+        background-color: rgba(0, 242, 254, 0.15) !important;
+        color: #00F2FE !important;
+    }
+
+    /* Force all text in sidebar, labels, and widget values to High-Contrast Neon/White */
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] label p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] p {
+        color: #38BDF8 !important;
+        font-weight: 600 !important;
+    }
+
+    [data-testid="stSidebar"] input {
+        color: #00F2FE !important;
+        -webkit-text-fill-color: #00F2FE !important;
+    }
+
+    /* --- 4. Permanent Glowing Glass Tabs --- */
+    div[data-testid="stTabs"] button[role="tab"] {
+        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1px solid rgba(0, 242, 254, 0.3) !important;
         border-radius: 8px 8px 0 0 !important;
-        padding: 8px 18px !important;
-        margin: 0 !important;
+        margin-right: 5px !important;
+        padding: 9px 18px !important;
         transition: all 0.25s ease-in-out !important;
     }
 
-    /* Force All Inactive Tab Text & Child Nodes to Bright Cyan Glow */
-    div[data-testid="stTabs"] button p,
-    div[data-testid="stTabs"] button span,
-    div[data-testid="stTabs"] button div,
-    div[data-testid="stTabs"] button * {
+    div[data-testid="stTabs"] button[role="tab"] * {
         color: #38BDF8 !important;
         font-weight: 700 !important;
         font-size: 13.5px !important;
-        text-shadow: 0 0 10px rgba(56, 189, 248, 0.75) !important;
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.7) !important;
     }
 
-    /* HOVER STATE */
-    div[data-testid="stTabs"] button:hover {
+    div[data-testid="stTabs"] button[role="tab"]:hover {
         border-color: #00F2FE !important;
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3) !important;
-    }
-    div[data-testid="stTabs"] button:hover * {
-        color: #00F2FE !important;
-        text-shadow: 0 0 14px rgba(0, 242, 254, 0.9) !important;
+        box-shadow: 0 0 16px rgba(0, 242, 254, 0.35) !important;
     }
 
-    /* ACTIVE / SELECTED TAB (VIBRANT NEON GLOW & ELECTRIC UNDERLINE) */
-    div[data-testid="stTabs"] button[aria-selected="true"],
-    div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
         background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
-        background-color: rgba(0, 242, 254, 0.2) !important;
         border: 1px solid #00F2FE !important;
         border-bottom: 3px solid #00F2FE !important;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.45) !important;
+        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
     }
 
-    div[data-testid="stTabs"] button[aria-selected="true"] p,
-    div[data-testid="stTabs"] button[aria-selected="true"] span,
-    div[data-testid="stTabs"] button[aria-selected="true"] div,
-    div[data-testid="stTabs"] button[aria-selected="true"] * {
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
         color: #FFFFFF !important;
-        text-shadow: 0 0 14px rgba(0, 242, 254, 1), 0 0 24px rgba(0, 242, 254, 0.8) !important;
+        text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
     }
 
-    /* =======================================================
-       1. FIX DATE INPUT CONTAINER & PICKER BACKGROUND
-       ======================================================= */
-    [data-testid="stSidebar"] div[data-baseweb="input"],
-    [data-testid="stSidebar"] div[data-baseweb="input"] > input,
-    [data-testid="stSidebar"] .stDateInput input,
-    [data-testid="stSidebar"] div[data-testid="stDateInput"] > div > div {
-        background-color: #101726 !important;
-        background: #101726 !important;
-        border: 1px solid rgba(0, 242, 254, 0.35) !important;
-        border-radius: 8px !important;
-        color: #00F2FE !important;
-        font-weight: 600 !important;
-        box-shadow: 0 0 10px rgba(0, 242, 254, 0.12) !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="input"] input::placeholder {
-        color: #67e8f9 !important;
-    }
-
-    /* =======================================================
-       2. ALL SIDEBAR LABELS & HEADINGS TO BRIGHT NEON CYAN
-       ======================================================= */
-    [data-testid="stSidebar"] label,
-    [data-testid="stSidebar"] label p,
-    [data-testid="stSidebar"] label span,
-    [data-testid="stSidebar"] .stMarkdown p,
-    [data-testid="stSidebar"] .stMarkdown h1,
-    [data-testid="stSidebar"] .stMarkdown h2,
-    [data-testid="stSidebar"] .stMarkdown h3,
-    [data-testid="stSidebar"] .stMarkdown h4,
-    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
-        color: #38BDF8 !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.4px !important;
-        text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
-    }
-
-    /* =======================================================
-       FIX SIDEBAR SELECTBOX & MULTISELECT DROPDOWN BOXES
-       ======================================================= */
-    [data-testid="stSidebar"] div[data-baseweb="select"] > div,
-    [data-testid="stSidebar"] div[data-baseweb="select"] div[role="combobox"],
-    [data-testid="stSidebar"] .stSelectbox > div > div,
-    [data-testid="stSidebar"] .stMultiSelect > div > div {
-        background-color: #101726 !important;
-        background: #101726 !important;
-        border: 1px solid rgba(0, 242, 254, 0.3) !important;
-        border-radius: 8px !important;
-        color: #F8FAFC !important;
-        box-shadow: 0 0 8px rgba(0, 242, 254, 0.1) !important;
-        transition: all 0.2s ease-in-out !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="select"] > div:hover,
-    [data-testid="stSidebar"] div[data-baseweb="select"] > div:focus-within {
-        border-color: #00F2FE !important;
-        box-shadow: 0 0 14px rgba(0, 242, 254, 0.3) !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="select"] * {
-        color: #94A3B8 !important;
-        font-size: 13.5px !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="select"] svg {
-        fill: #00F2FE !important;
-        color: #00F2FE !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="tag"] {
-        background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(99, 102, 241, 0.25)) !important;
-        border: 1px solid rgba(0, 242, 254, 0.5) !important;
-        border-radius: 6px !important;
-    }
-    [data-testid="stSidebar"] div[data-baseweb="tag"] span {
-        color: #00F2FE !important;
-        font-weight: 600 !important;
-    }
-
-    /* --- Glowing Buttons --- */
-    .stButton > button,
-    div[data-testid="stButton"] > button,
-    button[kind="secondary"],
-    div[data-testid="stFileUploader"] button {
-        background: linear-gradient(135deg, #1E293B, #0F172A) !important;
-        color: #00F2FE !important;
-        border: 1px solid rgba(0, 242, 254, 0.4) !important;
-        border-radius: 8px !important;
-        box-shadow: 0 0 10px rgba(0, 242, 254, 0.15) !important;
-        font-weight: 600 !important;
-    }
-
-    .stButton > button:hover,
-    div[data-testid="stButton"] > button:hover,
-    button[kind="secondary"]:hover {
-        background: linear-gradient(135deg, #0284C7, #0369A1) !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.5) !important;
+    /* Kill default red line */
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
+        display: none !important;
     }
 
     /* Remove default Streamlit top header gap */
@@ -625,7 +526,7 @@ with tab1:
         st.plotly_chart(fig_dow, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab1_dow_pattern")
 
 # ------------------------------------------
-# TAB 2: 🏬 MAĞAZA & REGİON ANALİZİ
+# TAB 2: 🏬 MAĞAZA & REGİON ANALİZİ (GLASSMORPHIC CARDS)
 # ------------------------------------------
 with tab2:
     if not df_filtered_ty.empty:
@@ -636,7 +537,7 @@ with tab2:
             st.plotly_chart(fig_st_rank, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab2_st_rank")
         
         with c_t2_right:
-            st.markdown("#### 📊 Mağaza Performans Cədvəli (TY vs LY)")
+            st.markdown("#### 📊 Glassmorphic Mağaza Performans Cədvəli (TY vs LY)")
             agg_st = df_filtered_ty.groupby(["STORE_ID", "STORE_NAME"])["GROSS_REVENUE"].sum().reset_index()
             if not df_filtered_ly.empty:
                 agg_st_ly = df_filtered_ly.groupby("STORE_ID")["GROSS_REVENUE"].sum().reset_index()
@@ -657,41 +558,21 @@ with tab2:
             agg_st = agg_st.sort_values("GROSS_REVENUE", ascending=False).reset_index(drop=True)
             agg_st.index += 1
 
-            st.dataframe(
-                agg_st.rename(columns={
-                    "STORE_ID": "Mağaza Kodu",
-                    "STORE_NAME": "Mağaza Adı",
-                    "GROSS_REVENUE": "Cari Satış (AZN)",
-                    "GROSS_REVENUE_LY": "Keçən İl (LY)",
-                    "FƏRQ_AZN": "Fərq (AZN)",
-                    "ARTIM_%": "Artım %"
-                }),
-                use_container_width=True,
-                height=320
-            )
+            # Render Custom Interactive Glassmorphic Table instead of raw Excel dataframe
+            st_table_html = render_glassmorphic_store_ranking_table(agg_st)
+            components.html(st_table_html, height=400, scrolling=False)
 
 # ------------------------------------------
-# TAB 3: 📦 KATEQORİYA, ABC & RISK RADAR
+# TAB 3: 📦 KATEQORİYA, ABC & RISK RADAR (GLASSMORPHIC CARDS)
 # ------------------------------------------
 with tab3:
     if not df_filtered_ty.empty:
         blocked_df = df_filtered_ty[df_filtered_ty["SATISA BLOKLU"] == 1]
-        if not blocked_df.empty:
-            blocked_count = blocked_df["MEHSUL_KODU"].nunique()
-            blocked_rev = blocked_df["GROSS_REVENUE"].sum()
-            st.markdown(
-                f"""
-                <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); 
-                            padding: 10px 14px; border-radius: 8px; margin-bottom: 14px;">
-                    <span style="color: #f87171; font-weight: 800; font-size: 0.9rem;">⚠️ RISK RADAR: SATIŞA BLOKLANMIŞ MƏHSULLAR</span><br>
-                    <span style="font-size: 0.78rem; color: #fca5a5;">
-                        Hazırda <b>{blocked_count} adət</b> yüksək gəlirli məhsul (Ümumi gəlir: <b>{blocked_rev:,.0f} ₼</b>) satışa bloklanmış və ya təchizat riskindədir!
-                    </span>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        st.markdown("#### ⚠️ RISK RADAR: SATIŞA BLOKLANMIŞ MƏHSUL PANEDİ")
+        risk_table_html = render_glassmorphic_risk_radar_table(blocked_df)
+        components.html(risk_table_html, height=390, scrolling=False)
 
+        st.markdown("<br>", unsafe_allow_html=True)
         c_t3_left, c_t3_right = st.columns(2)
         with c_t3_left:
             fig_pareto = create_pareto_chart(df_filtered_ty)
@@ -709,7 +590,7 @@ with tab3:
         st.plotly_chart(fig_treemap, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab3_treemap")
 
 # ------------------------------------------
-# TAB SUPPLIER: 🏭 TƏCHİZATÇI & BREND ANALİZİ
+# TAB SUPPLIER: 🏭 TƏCHİZATÇI & BREND ANALİZİ (GLASSMORPHIC CARDS)
 # ------------------------------------------
 with tab_supplier:
     if not df_filtered_ty.empty:
@@ -722,6 +603,11 @@ with tab_supplier:
         with c_sup2:
             fig_sup_donut = create_supplier_concentration_donut_chart(df_filtered_ty)
             st.plotly_chart(fig_sup_donut, use_container_width=True, config=PLOTLY_CONFIG, key="fig_sup_donut")
+
+        st.markdown("---")
+        st.markdown("#### 🏆 Glassmorphic Təchizatçı Liderlik Paneli")
+        sup_table_html = render_glassmorphic_supplier_leadership_table(df_filtered_ty, top_n=12)
+        components.html(sup_table_html, height=400, scrolling=False)
 
         st.markdown("---")
         st.markdown("#### 🎯 Təchizatçı üzrə Detallı Drilldown")

@@ -5,6 +5,9 @@ backgroundColor = "#070A13"
 secondaryBackgroundColor = "#0F172A"
 textColor = "#F8FAFC"
 
+[client]
+toolbarMode = "minimal"
+
 [server]
 headless = true
 port = 8585
