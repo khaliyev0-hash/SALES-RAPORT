@@ -85,7 +85,6 @@ st.markdown(
     /* =======================================================
        1. FIX ALL WHITE INPUT BOXES IN SIDEBAR (SELECTBOX, DATE, MULTISELECT)
        ======================================================= */
-    /* All selectboxes, date input, and multiselect containers in sidebar */
     [data-testid="stSidebar"] div[data-baseweb="select"] > div,
     [data-testid="stSidebar"] div[data-baseweb="input"],
     [data-testid="stSidebar"] div[data-baseweb="input"] > input,
@@ -101,7 +100,6 @@ st.markdown(
         box-shadow: 0 0 10px rgba(0, 242, 254, 0.1) !important;
     }
 
-    /* Fix text and placeholder inside selectboxes and inputs */
     [data-testid="stSidebar"] input,
     [data-testid="stSidebar"] div[data-baseweb="select"] * {
         color: #F8FAFC !important;
@@ -161,7 +159,6 @@ st.markdown(
     /* =======================================================
        2. FIX UNREADABLE TABS & REMOVE DEFAULT RED UNDERLINE
        ======================================================= */
-    /* Kill red underline highlight */
     div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
     div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
         display: none !important;
@@ -169,7 +166,6 @@ st.markdown(
         height: 0px !important;
     }
 
-    /* Base style for ALL tab buttons */
     div[data-testid="stTabs"] button[role="tab"] {
         background: rgba(15, 23, 42, 0.85) !important;
         border: 1px solid rgba(0, 242, 254, 0.25) !important;
@@ -179,7 +175,6 @@ st.markdown(
         transition: all 0.25s ease-in-out !important;
     }
 
-    /* Force all inactive tab labels to bright cyan glow */
     div[data-testid="stTabs"] button[role="tab"] p,
     div[data-testid="stTabs"] button[role="tab"] span,
     div[data-testid="stTabs"] button[role="tab"] div,
@@ -190,7 +185,6 @@ st.markdown(
         text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
     }
 
-    /* Active / Selected Tab (Bright White text on Electric Cyan border) */
     div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
         background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
         border: 1px solid #00F2FE !important;
@@ -203,7 +197,6 @@ st.markdown(
         text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
     }
 
-    /* Remove Excel-like Table Look */
     div[data-testid="stDataFrame"], div[data-testid="stTable"] {
         border: 1px solid rgba(0, 242, 254, 0.25) !important;
         border-radius: 12px !important;
@@ -212,7 +205,6 @@ st.markdown(
         overflow: hidden !important;
     }
 
-    /* Remove default Streamlit top header gap */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0rem !important;
@@ -251,7 +243,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Date Selector Engine
     st.markdown("#### 📅 Calendar & Date Engine")
     
     date_preset = st.selectbox(
@@ -306,7 +297,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Bulk Product / SKU File Uploader
     st.markdown("#### 📁 Bulk SKU File Uploader")
     uploaded_file = st.file_uploader(
         "📁 Xüsusi Məhsul Siyahısı Yüklə (.xlsx, .csv, .txt)",
@@ -347,7 +337,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Fetch Datasets
     df_base_ty, df_base_ly, is_live_db, status_msg, diag_log = fetch_ty_and_ly_datasets(start_date, end_date)
 
     st.markdown("#### 🔍 Cascading Filters")
@@ -481,7 +470,6 @@ with tab1:
         days_count = max(1, (end_date - start_date).days + 1)
         avg_daily_sales = total_sales_ty / days_count
 
-        # 1. JavaScript Animated Neon KPI Ticker Row
         metrics_list = [
             {"title": "💰 Ümumi Satış (TY)", "value": total_sales_ty, "sub_text": "Cari Dövr Satışı", "accent_color": "#00f2fe", "suffix": " ₼"},
             {"title": "📦 Satış Miqdarı", "value": total_qty_ty, "sub_text": "Ümumi Ədəd", "accent_color": "#6366f1", "suffix": " əd"},
@@ -541,14 +529,14 @@ with tab1:
         with c_t1_left:
             df_t = df_filtered_ty.copy()
             df_t["DATE_ONLY"] = pd.to_datetime(df_t["SALES_DATE"]).dt.strftime("%d %b")
-            agg_ty = df_t.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
+            agg_ty = df_t.groupby("DATE_ONLY", sort=False)["GROSS_REVENUE"].sum().reset_index()
             dates_list = agg_ty["DATE_ONLY"].tolist()
             ty_list = agg_ty["GROSS_REVENUE"].tolist()
 
             if not df_filtered_ly.empty:
                 df_l = df_filtered_ly.copy()
                 df_l["DATE_ONLY"] = pd.to_datetime(df_l["SALES_DATE"]).dt.strftime("%d %b")
-                agg_ly = df_l.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
+                agg_ly = df_l.groupby("DATE_ONLY", sort=False)["GROSS_REVENUE"].sum().reset_index()
                 ly_list = agg_ly["GROSS_REVENUE"].tail(len(dates_list)).tolist()
             else:
                 ly_list = [v * 0.88 for v in ty_list]
@@ -574,7 +562,7 @@ with tab1:
         st.plotly_chart(fig_dow, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab1_dow_pattern")
 
 # ------------------------------------------
-# TAB 2: 🏬 MAĞAZA & REGİON ANALİZİ (GLASSMORPHIC CARDS)
+# TAB 2: 🏬 MAĞAZA & REGİON ANALİZİ
 # ------------------------------------------
 with tab2:
     if not df_filtered_ty.empty:
@@ -606,12 +594,11 @@ with tab2:
             agg_st = agg_st.sort_values("GROSS_REVENUE", ascending=False).reset_index(drop=True)
             agg_st.index += 1
 
-            # Render Custom Interactive Glassmorphic Table instead of raw Excel dataframe
             st_table_html = render_glassmorphic_store_ranking_table(agg_st)
             components.html(st_table_html, height=400, scrolling=False)
 
 # ------------------------------------------
-# TAB 3: 📦 KATEQORİYA, ABC & RISK RADAR (GLASSMORPHIC CARDS)
+# TAB 3: 📦 KATEQORİYA, ABC & RISK RADAR
 # ------------------------------------------
 with tab3:
     if not df_filtered_ty.empty:
@@ -638,7 +625,7 @@ with tab3:
         st.plotly_chart(fig_treemap, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab3_treemap")
 
 # ------------------------------------------
-# TAB SUPPLIER: 🏭 TƏCHİZATÇI & BREND ANALİZİ (GLASSMORPHIC CARDS)
+# TAB SUPPLIER: 🏭 TƏCHİZATÇI & BREND ANALİZİ
 # ------------------------------------------
 with tab_supplier:
     if not df_filtered_ty.empty:
@@ -798,7 +785,7 @@ with tab4:
         st.plotly_chart(fig_basket, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab4_basket_chart")
 
 # ------------------------------------------
-# TAB 5: 🟢 TOP / 🔴 BOTTOM RADAR (APEX JS BARS)
+# TAB 5: 🟢 TOP / 🔴 BOTTOM RADAR
 # ------------------------------------------
 with tab5:
     if not df_filtered_ty.empty:
