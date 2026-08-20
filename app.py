@@ -1,42 +1,53 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Architecture (Enterprise SaaS Overhaul)
+High-Tech Cosmic Dark & Neon Glow Architecture (Enterprise SaaS Overhaul + Cloud Path Injection)
 """
 
+import sys
+import os
 import io
 import datetime
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
-from queries import fetch_ty_and_ly_datasets, apply_cascading_filters, force_db_status_reset, standardize_dataframe_columns
-from frontend_components import (
-    inject_global_theme_css,
-    render_khayal_aliyev_branding_badge,
-)
-from js_components import (
-    render_neon_kpi_cards,
-    render_apex_sales_wave,
-    render_echarts_hollow_donut,
-    render_apex_horizontal_bars,
-    render_glassmorphic_store_ranking_table,
-    render_glassmorphic_supplier_leadership_table,
-    render_glassmorphic_risk_radar_table,
-)
-from visuals import (
-    create_day_of_week_chart,
-    create_store_ranking_chart,
-    create_store_treemap,
-    create_pareto_chart,
-    create_waterfall_contribution_chart,
-    create_basket_analytics_chart,
-    create_product_velocity_quadrant,
-    create_top_suppliers_chart,
-    create_supplier_concentration_donut_chart,
-    create_insert_sales_comparison_chart,
-    create_top_insert_products_chart,
-)
+# Force current working directory & app directory into sys.path for Streamlit Cloud parity
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+if APP_DIR not in sys.path:
+    sys.path.insert(0, APP_DIR)
+
+try:
+    from queries import fetch_ty_and_ly_datasets, apply_cascading_filters, force_db_status_reset, standardize_dataframe_columns
+    from frontend_components import (
+        inject_global_theme_css,
+        render_khayal_aliyev_branding_badge,
+    )
+    from js_components import (
+        render_neon_kpi_cards,
+        render_apex_sales_wave,
+        render_echarts_hollow_donut,
+        render_apex_horizontal_bars,
+        render_glassmorphic_store_ranking_table,
+        render_glassmorphic_supplier_leadership_table,
+        render_glassmorphic_risk_radar_table,
+    )
+    from visuals import (
+        create_day_of_week_chart,
+        create_store_ranking_chart,
+        create_store_treemap,
+        create_pareto_chart,
+        create_waterfall_contribution_chart,
+        create_basket_analytics_chart,
+        create_product_velocity_quadrant,
+        create_top_suppliers_chart,
+        create_supplier_concentration_donut_chart,
+        create_insert_sales_comparison_chart,
+        create_top_insert_products_chart,
+    )
+except ImportError as err:
+    st.error(f"⚠️ Critical Module Import Error: {err}. Please ensure all .py files (js_components.py, queries.py, frontend_components.py, visuals.py, db.py) are present in the root directory.")
+    st.stop()
 
 # Page Setup
 st.set_page_config(
