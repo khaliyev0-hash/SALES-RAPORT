@@ -81,6 +81,47 @@ def inject_global_theme_css():
             color: #00F2FE !important;
         }
 
+        /* =======================================================
+           1b. FIX WHITE FILE UPLOADER BOX IN SIDEBAR
+           ======================================================= */
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"],
+        [data-testid="stSidebar"] section[data-testid="stFileUploaderDropzone"],
+        [data-testid="stSidebar"] div[data-testid="stFileUploader"] section {
+            background: #101726 !important;
+            border: 1px dashed rgba(0, 242, 254, 0.4) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.1) !important;
+        }
+
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] *,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] * {
+            color: #E2E8F0 !important;
+            -webkit-text-fill-color: #E2E8F0 !important;
+        }
+
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] small,
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzoneInstructions"] span {
+            color: #94A3B8 !important;
+            -webkit-text-fill-color: #94A3B8 !important;
+        }
+
+        [data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] svg {
+            fill: #00F2FE !important;
+            color: #00F2FE !important;
+        }
+
+        /* Uploaded file row (name / size / remove icon) */
+        [data-testid="stSidebar"] [data-testid="stFileUploaderFile"] {
+            background: #0F172A !important;
+            border: 1px solid rgba(0, 242, 254, 0.2) !important;
+            border-radius: 8px !important;
+            color: #F8FAFC !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stFileUploaderFile"] * {
+            color: #F8FAFC !important;
+            -webkit-text-fill-color: #F8FAFC !important;
+        }
+
         [data-testid="stSidebar"] div[data-baseweb="tag"] {
             background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(99, 102, 241, 0.25)) !important;
             border: 1px solid rgba(0, 242, 254, 0.5) !important;
@@ -108,6 +149,67 @@ def inject_global_theme_css():
             color: #00F2FE !important;
         }
 
+        /* =======================================================
+           1c. FIX WHITE DATE-RANGE CALENDAR POPUP
+           (BaseWeb's Calendar is portaled to <body>, so it sits
+           OUTSIDE [data-testid="stSidebar"] and needs global rules.)
+           ======================================================= */
+        div[data-baseweb="calendar"],
+        div[data-baseweb="datepicker"] {
+            background: #0F172A !important;
+            border: 1px solid rgba(0, 242, 254, 0.3) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+        }
+
+        div[data-baseweb="calendar"] div {
+            background: transparent !important;
+        }
+
+        /* Month/Year header + nav arrows */
+        div[data-baseweb="calendar"] div[role="presentation"],
+        div[data-baseweb="calendar"] button[aria-label*="previous" i],
+        div[data-baseweb="calendar"] button[aria-label*="next" i] {
+            color: #38BDF8 !important;
+            background: transparent !important;
+        }
+
+        /* Weekday header row (S M T W T F S) */
+        div[data-baseweb="calendar"] [role="columnheader"] {
+            color: #94A3B8 !important;
+            font-weight: 700 !important;
+        }
+
+        /* Day cells */
+        div[data-baseweb="calendar"] div[role="gridcell"] div {
+            color: #F8FAFC !important;
+            background: transparent !important;
+        }
+
+        /* Disabled / outside-range days */
+        div[data-baseweb="calendar"] div[aria-disabled="true"] div {
+            color: #475569 !important;
+        }
+
+        /* Hover state on a selectable day */
+        div[data-baseweb="calendar"] div[role="gridcell"]:hover div {
+            background: rgba(0, 242, 254, 0.18) !important;
+            border-radius: 6px !important;
+        }
+
+        /* Selected day / range highlight keeps its accent, just force readable text */
+        div[data-baseweb="calendar"] div[aria-selected="true"] div {
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+        }
+
+        /* Month / Year select dropdowns inside the calendar header */
+        div[data-baseweb="calendar"] div[data-baseweb="select"] > div {
+            background: #101726 !important;
+            color: #F8FAFC !important;
+            border: 1px solid rgba(0, 242, 254, 0.3) !important;
+        }
+
         /* Force all text in sidebar labels to High-Contrast Cyan/White */
         [data-testid="stSidebar"] label,
         [data-testid="stSidebar"] label p,
@@ -124,6 +226,9 @@ def inject_global_theme_css():
 
         /* =======================================================
            2. FIX UNREADABLE TABS & REMOVE DEFAULT RED UNDERLINE
+           (Broadened selectors to cover multiple Streamlit/BaseWeb DOM
+           variants: button[role=tab] AND [data-baseweb=tab], plus any
+           nested <p>/<span>/<div> label wrapper.)
            ======================================================= */
         /* Kill red underline highlight */
         div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
@@ -133,9 +238,15 @@ def inject_global_theme_css():
             height: 0px !important;
         }
 
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+            gap: 4px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
         /* Base style for ALL tab buttons */
-        div[data-testid="stTabs"] button[role="tab"] {
-            background: rgba(15, 23, 42, 0.85) !important;
+        div[data-testid="stTabs"] button[role="tab"],
+        div[data-testid="stTabs"] [data-baseweb="tab"] {
+            background: rgba(15, 23, 42, 0.9) !important;
             border: 1px solid rgba(0, 242, 254, 0.25) !important;
             border-radius: 8px 8px 0 0 !important;
             padding: 8px 16px !important;
@@ -143,27 +254,49 @@ def inject_global_theme_css():
             transition: all 0.25s ease-in-out !important;
         }
 
-        /* Force all inactive tab labels to bright cyan glow */
-        div[data-testid="stTabs"] button[role="tab"] p,
-        div[data-testid="stTabs"] button[role="tab"] span,
-        div[data-testid="stTabs"] button[role="tab"] div,
-        div[data-testid="stTabs"] button[role="tab"] * {
-            color: #38BDF8 !important;
+        /* Force ALL inactive tab labels to bright, high-contrast, colorful text.
+           Each tab gets its own vivid accent color so the row reads as
+           lively and easy to scan instead of a flat dim strip. */
+        div[data-testid="stTabs"] button[role="tab"] *,
+        div[data-testid="stTabs"] [data-baseweb="tab"] * {
             font-weight: 700 !important;
             font-size: 13px !important;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
+            opacity: 1 !important;
+            -webkit-text-fill-color: currentColor !important;
         }
+
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(1) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(1) * { color: #38BDF8 !important; text-shadow: 0 0 8px rgba(56,189,248,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(2) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(2) * { color: #22D3EE !important; text-shadow: 0 0 8px rgba(34,211,238,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(3) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(3) * { color: #A78BFA !important; text-shadow: 0 0 8px rgba(167,139,250,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(4) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(4) * { color: #F472B6 !important; text-shadow: 0 0 8px rgba(244,114,182,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(5) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(5) * { color: #FBBF24 !important; text-shadow: 0 0 8px rgba(251,191,36,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(6) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(6) * { color: #34D399 !important; text-shadow: 0 0 8px rgba(52,211,153,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(7) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(7) * { color: #FB923C !important; text-shadow: 0 0 8px rgba(251,146,60,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(8) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(8) * { color: #F87171 !important; text-shadow: 0 0 8px rgba(248,113,113,0.8) !important; }
+        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(9) *,
+        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(9) * { color: #818CF8 !important; text-shadow: 0 0 8px rgba(129,140,248,0.8) !important; }
 
         /* Active / Selected Tab (Bright White text on Electric Cyan border) */
-        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
+        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
+        div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] {
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.35), rgba(15, 23, 42, 0.95)) !important;
             border: 1px solid #00F2FE !important;
             border-bottom: 3px solid #00F2FE !important;
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.5) !important;
         }
 
-        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
+        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] *,
+        div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
             color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
             text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
         }
 
