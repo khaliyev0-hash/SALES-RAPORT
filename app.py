@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Architecture (Enterprise SaaS Overhaul + Cloud Path Injection)
+High-Tech Cosmic Dark & Neon Glow Architecture (High-Specificity Sidebar & Tab Fixes)
 """
 
 import sys
@@ -82,26 +82,49 @@ st.markdown(
         box-shadow: 10px 0 25px rgba(0, 0, 0, 0.5) !important;
     }
 
-    /* --- 2. Remove Excel-like Table Look (Modern Dark Glass Tables) --- */
-    div[data-testid="stDataFrame"], div[data-testid="stTable"] {
-        border: 1px solid rgba(0, 242, 254, 0.25) !important;
-        border-radius: 12px !important;
-        background: rgba(15, 23, 42, 0.8) !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-        overflow: hidden !important;
-    }
-
-    /* --- 3. Fix ALL Inputs, Selectboxes, Dropdowns & Popups (No White Bleed) --- */
-    div[data-baseweb="select"] > div,
-    div[data-baseweb="input"],
-    div[data-baseweb="base-input"],
-    .stDateInput input,
-    div[data-testid="stFileUploader"] {
+    /* =======================================================
+       1. FIX ALL WHITE INPUT BOXES IN SIDEBAR (SELECTBOX, DATE, MULTISELECT)
+       ======================================================= */
+    /* All selectboxes, date input, and multiselect containers in sidebar */
+    [data-testid="stSidebar"] div[data-baseweb="select"] > div,
+    [data-testid="stSidebar"] div[data-baseweb="input"],
+    [data-testid="stSidebar"] div[data-baseweb="input"] > input,
+    [data-testid="stSidebar"] .stSelectbox > div > div,
+    [data-testid="stSidebar"] .stMultiSelect > div > div,
+    [data-testid="stSidebar"] .stDateInput input,
+    [data-testid="stSidebar"] div[data-testid="stDateInput"] > div > div {
         background-color: #101726 !important;
         background: #101726 !important;
         border: 1px solid rgba(0, 242, 254, 0.35) !important;
         border-radius: 8px !important;
         color: #F8FAFC !important;
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.1) !important;
+    }
+
+    /* Fix text and placeholder inside selectboxes and inputs */
+    [data-testid="stSidebar"] input,
+    [data-testid="stSidebar"] div[data-baseweb="select"] * {
+        color: #F8FAFC !important;
+        -webkit-text-fill-color: #F8FAFC !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="select"] span {
+        color: #94A3B8 !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="select"] svg {
+        fill: #00F2FE !important;
+        color: #00F2FE !important;
+    }
+
+    [data-testid="stSidebar"] div[data-baseweb="tag"] {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(99, 102, 241, 0.25)) !important;
+        border: 1px solid rgba(0, 242, 254, 0.5) !important;
+        border-radius: 6px !important;
+    }
+    [data-testid="stSidebar"] div[data-baseweb="tag"] span {
+        color: #00F2FE !important;
+        font-weight: 600 !important;
     }
 
     /* Dropdown Popup Menus & List Items */
@@ -121,42 +144,53 @@ st.markdown(
         color: #00F2FE !important;
     }
 
-    /* Force all text in sidebar, labels, and widget values to High-Contrast Neon/White */
+    /* Force all text in sidebar labels to High-Contrast Cyan/White */
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] label p,
-    [data-testid="stSidebar"] span,
-    [data-testid="stSidebar"] p {
+    [data-testid="stSidebar"] .stMarkdown p,
+    [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2,
+    [data-testid="stSidebar"] .stMarkdown h3,
+    [data-testid="stSidebar"] .stMarkdown h4 {
         color: #38BDF8 !important;
-        font-weight: 600 !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.4px !important;
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.6) !important;
     }
 
-    [data-testid="stSidebar"] input {
-        color: #00F2FE !important;
-        -webkit-text-fill-color: #00F2FE !important;
+    /* =======================================================
+       2. FIX UNREADABLE TABS & REMOVE DEFAULT RED UNDERLINE
+       ======================================================= */
+    /* Kill red underline highlight */
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
+        display: none !important;
+        background-color: transparent !important;
+        height: 0px !important;
     }
 
-    /* --- 4. Permanent Glowing Glass Tabs --- */
+    /* Base style for ALL tab buttons */
     div[data-testid="stTabs"] button[role="tab"] {
         background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(0, 242, 254, 0.3) !important;
+        border: 1px solid rgba(0, 242, 254, 0.25) !important;
         border-radius: 8px 8px 0 0 !important;
-        margin-right: 5px !important;
-        padding: 9px 18px !important;
+        padding: 8px 16px !important;
+        margin-right: 4px !important;
         transition: all 0.25s ease-in-out !important;
     }
 
+    /* Force all inactive tab labels to bright cyan glow */
+    div[data-testid="stTabs"] button[role="tab"] p,
+    div[data-testid="stTabs"] button[role="tab"] span,
+    div[data-testid="stTabs"] button[role="tab"] div,
     div[data-testid="stTabs"] button[role="tab"] * {
         color: #38BDF8 !important;
         font-weight: 700 !important;
-        font-size: 13.5px !important;
-        text-shadow: 0 0 8px rgba(56, 189, 248, 0.7) !important;
+        font-size: 13px !important;
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
     }
 
-    div[data-testid="stTabs"] button[role="tab"]:hover {
-        border-color: #00F2FE !important;
-        box-shadow: 0 0 16px rgba(0, 242, 254, 0.35) !important;
-    }
-
+    /* Active / Selected Tab (Bright White text on Electric Cyan border) */
     div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
         background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
         border: 1px solid #00F2FE !important;
@@ -169,10 +203,13 @@ st.markdown(
         text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
     }
 
-    /* Kill default red line */
-    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
-    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
-        display: none !important;
+    /* Remove Excel-like Table Look */
+    div[data-testid="stDataFrame"], div[data-testid="stTable"] {
+        border: 1px solid rgba(0, 242, 254, 0.25) !important;
+        border-radius: 12px !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+        overflow: hidden !important;
     }
 
     /* Remove default Streamlit top header gap */
