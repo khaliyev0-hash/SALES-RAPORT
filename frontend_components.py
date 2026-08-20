@@ -254,35 +254,51 @@ def inject_global_theme_css():
             transition: all 0.25s ease-in-out !important;
         }
 
-        /* Force ALL inactive tab labels to bright, high-contrast, colorful text.
-           Each tab gets its own vivid accent color so the row reads as
-           lively and easy to scan instead of a flat dim strip. */
-        div[data-testid="stTabs"] button[role="tab"] *,
-        div[data-testid="stTabs"] [data-baseweb="tab"] * {
+        /* ---------------------------------------------------------
+           GUARANTEED READABILITY LAYER (fires first, wins ties via
+           high selector specificity + !important, and covers every
+           possible label wrapper: p, span, div, text nodes via *).
+           This alone fixes readability even if the DOM structure
+           doesn't match the fancy per-tab coloring rules below.
+           --------------------------------------------------------- */
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"],
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] p,
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] span,
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] div,
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][role="tab"] * {
+            color: #7DD3FC !important;
+            -webkit-text-fill-color: #7DD3FC !important;
+            opacity: 1 !important;
             font-weight: 700 !important;
             font-size: 13px !important;
-            opacity: 1 !important;
-            -webkit-text-fill-color: currentColor !important;
+            text-shadow: 0 0 8px rgba(125, 211, 252, 0.9) !important;
         }
 
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(1) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(1) * { color: #38BDF8 !important; text-shadow: 0 0 8px rgba(56,189,248,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(2) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(2) * { color: #22D3EE !important; text-shadow: 0 0 8px rgba(34,211,238,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(3) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(3) * { color: #A78BFA !important; text-shadow: 0 0 8px rgba(167,139,250,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(4) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(4) * { color: #F472B6 !important; text-shadow: 0 0 8px rgba(244,114,182,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(5) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(5) * { color: #FBBF24 !important; text-shadow: 0 0 8px rgba(251,191,36,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(6) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(6) * { color: #34D399 !important; text-shadow: 0 0 8px rgba(52,211,153,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(7) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(7) * { color: #FB923C !important; text-shadow: 0 0 8px rgba(251,146,60,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(8) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(8) * { color: #F87171 !important; text-shadow: 0 0 8px rgba(248,113,113,0.8) !important; }
-        div[data-testid="stTabs"] button[role="tab"]:nth-of-type(9) *,
-        div[data-testid="stTabs"] [data-baseweb="tab"]:nth-of-type(9) * { color: #818CF8 !important; text-shadow: 0 0 8px rgba(129,140,248,0.8) !important; }
+        /* ---------------------------------------------------------
+           OPTIONAL COLORFUL LAYER: applies a distinct accent per tab
+           by targeting DIRECT children of the tab-list (more reliable
+           positional indexing than nth-of-type on nested elements).
+           Falls back gracefully to the layer above if this doesn't
+           match the live DOM.
+           --------------------------------------------------------- */
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(1),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(1) * { color: #38BDF8 !important; -webkit-text-fill-color: #38BDF8 !important; text-shadow: 0 0 8px rgba(56,189,248,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(2),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(2) * { color: #22D3EE !important; -webkit-text-fill-color: #22D3EE !important; text-shadow: 0 0 8px rgba(34,211,238,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(3),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(3) * { color: #C4B5FD !important; -webkit-text-fill-color: #C4B5FD !important; text-shadow: 0 0 8px rgba(196,181,253,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(4),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(4) * { color: #F9A8D4 !important; -webkit-text-fill-color: #F9A8D4 !important; text-shadow: 0 0 8px rgba(249,168,212,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(5),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(5) * { color: #FCD34D !important; -webkit-text-fill-color: #FCD34D !important; text-shadow: 0 0 8px rgba(252,211,77,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(6),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(6) * { color: #6EE7B7 !important; -webkit-text-fill-color: #6EE7B7 !important; text-shadow: 0 0 8px rgba(110,231,183,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(7),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(7) * { color: #FDBA74 !important; -webkit-text-fill-color: #FDBA74 !important; text-shadow: 0 0 8px rgba(253,186,116,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(8),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(8) * { color: #FCA5A5 !important; -webkit-text-fill-color: #FCA5A5 !important; text-shadow: 0 0 8px rgba(252,165,165,0.9) !important; }
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(9),
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] > button:nth-child(9) * { color: #A5B4FC !important; -webkit-text-fill-color: #A5B4FC !important; text-shadow: 0 0 8px rgba(165,180,252,0.9) !important; }
 
         /* Active / Selected Tab (Bright White text on Electric Cyan border) */
         div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
@@ -293,8 +309,11 @@ def inject_global_theme_css():
             box-shadow: 0 0 18px rgba(0, 242, 254, 0.5) !important;
         }
 
-        div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] *,
-        div[data-testid="stTabs"] [data-baseweb="tab"][aria-selected="true"] * {
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"],
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] p,
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] span,
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] div,
+        div[data-testid="stTabs"][data-testid="stTabs"] button[role="tab"][aria-selected="true"][aria-selected="true"] * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
