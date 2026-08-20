@@ -157,44 +157,80 @@ st.markdown(
     }
 
     /* =======================================================
-       2. FIX UNREADABLE TABS & REMOVE DEFAULT RED UNDERLINE
+    /* =======================================================
+       2. BULLETPROOF STREAMLIT TAB FIX (v1.4x+ compatible)
        ======================================================= */
+
+    div[data-testid="stTabs"] div[role="tablist"] {
+        gap: 6px !important;
+        background: rgba(7,10,19,0.35) !important;
+        padding: 6px 8px !important;
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        border-radius: 12px !important;
+    }
+
     div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
-    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
+    div[data-testid="stTabs"] [data-testid="stTabHighlight"],
+    div[data-testid="stTabs"] [data-baseweb="tab-border"] {
         display: none !important;
-        background-color: transparent !important;
-        height: 0px !important;
+        opacity: 0 !important;
+        height: 0 !important;
     }
 
-    div[data-testid="stTabs"] button[role="tab"] {
-        background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(0, 242, 254, 0.25) !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 8px 16px !important;
-        margin-right: 4px !important;
-        transition: all 0.25s ease-in-out !important;
+    div[data-testid="stTabs"] [role="tab"],
+    div[data-testid="stTabs"] button[data-testid="stTab"],
+    div[data-testid="stTabs"] [data-testid="stTab"] {
+        background: rgba(15, 23, 42, 0.96) !important;
+        border: 1px solid rgba(148,163,184,0.28) !important;
+        border-radius: 9px !important;
+        padding: 10px 14px !important;
+        margin: 0 !important;
+        min-height: 42px !important;
+        opacity: 1 !important;
+        transition: all .2s ease !important;
     }
 
-    div[data-testid="stTabs"] button[role="tab"] p,
-    div[data-testid="stTabs"] button[role="tab"] span,
-    div[data-testid="stTabs"] button[role="tab"] div,
-    div[data-testid="stTabs"] button[role="tab"] * {
-        color: #38BDF8 !important;
+    div[data-testid="stTabs"] [role="tab"],
+    div[data-testid="stTabs"] [role="tab"] *,
+    div[data-testid="stTabs"] button[data-testid="stTab"],
+    div[data-testid="stTabs"] button[data-testid="stTab"] *,
+    div[data-testid="stTabs"] [data-testid="stTab"],
+    div[data-testid="stTabs"] [data-testid="stTab"] * {
+        color: #E5F3FF !important;
+        -webkit-text-fill-color: #E5F3FF !important;
+        fill: #E5F3FF !important;
+        opacity: 1 !important;
         font-weight: 700 !important;
         font-size: 13px !important;
-        text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
+        text-shadow: 0 1px 8px rgba(56,189,248,.22) !important;
     }
 
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
-        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
-        border: 1px solid #00F2FE !important;
-        border-bottom: 3px solid #00F2FE !important;
-        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
+    div[data-testid="stTabs"] [role="tab"]:hover,
+    div[data-testid="stTabs"] button[data-testid="stTab"]:hover,
+    div[data-testid="stTabs"] [data-testid="stTab"]:hover {
+        background: rgba(30,41,59,1) !important;
+        border-color: rgba(0,242,254,.65) !important;
+        box-shadow: 0 0 16px rgba(0,242,254,.18) !important;
     }
 
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] button[data-testid="stTab"][aria-selected="true"],
+    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] {
+        background: linear-gradient(180deg, rgba(0,242,254,.22), rgba(15,23,42,.98)) !important;
+        border-color: #22D3EE !important;
+        box-shadow: inset 0 0 0 1px rgba(34,211,238,.18), 0 0 18px rgba(34,211,238,.22) !important;
+    }
+
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"] *,
+    div[data-testid="stTabs"] button[data-testid="stTab"][aria-selected="true"],
+    div[data-testid="stTabs"] button[data-testid="stTab"][aria-selected="true"] *,
+    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"],
+    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] * {
         color: #FFFFFF !important;
-        text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
+        -webkit-text-fill-color: #FFFFFF !important;
+        fill: #FFFFFF !important;
+        text-shadow: 0 0 10px rgba(34,211,238,.55) !important;
     }
 
     div[data-testid="stDataFrame"], div[data-testid="stTable"] {
