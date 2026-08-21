@@ -198,7 +198,8 @@ def create_product_velocity_quadrant(df: pd.DataFrame) -> go.Figure:
         TOTAL_QTY=("QUANTITY", "sum")
     ).reset_index()
 
-    agg["AVG_PRICE"] = agg["TOTAL_REV"] / agg["TOTAL_QTY"].replace(0, 1)
+    # Ensure AVG_PRICE is strictly positive for Plotly marker size requirement
+    agg["AVG_PRICE"] = (agg["TOTAL_REV"] / agg["TOTAL_QTY"].replace(0, 1)).abs().clip(lower=0.1)
     median_rev = agg["TOTAL_REV"].median()
     median_qty = agg["TOTAL_QTY"].median()
 

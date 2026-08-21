@@ -1,6 +1,6 @@
 """
-Queries & Data Loader Engine (Optimized Single Store 110 Test View)
-Fetches targeted data for Store 110 directly in SQL Server for sub-second loading speed
+Queries & Data Loader Engine (Full Multi-Store Production Mode)
+Fetches data across ALL stores directly in SQL Server for full network analysis
 with safe parameterized SQL execution, safe column alias standardization, Insert / Promotion columns, and Supplier / Risk Status metadata.
 """
 
@@ -58,7 +58,7 @@ def standardize_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
         df["MAGAZA"] = df["STORE_NAME"]
 
     if "STORE_ID" not in df.columns:
-        df["STORE_ID"] = df.get("STORE_NAME", "110")
+        df["STORE_ID"] = df.get("STORE_NAME", "Unknown")
 
     if "COST" not in df.columns and "SATIS_EDVSIZ" in df.columns:
         df["COST"] = df["SATIS_EDVSIZ"]
@@ -78,7 +78,7 @@ def standardize_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
 
     # Supplier & Risk Status Columns
     if "SATICI ADI" not in df.columns:
-        df["SATICI ADI"] = df.get("SUPPLIER_NAME", "Direct Supplier Corp")
+        df["SATICI ADI"] = df.get("SUPPLIER_NAME", "RUSTEMOGLU LTD MMC")
     if "SATICI" not in df.columns:
         df["SATICI"] = "SUP-101"
     if "SATISA BLOKLU" not in df.columns:
@@ -89,9 +89,9 @@ def standardize_dataframe_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 @st.cache_data(ttl=600, show_spinner=False)
-def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, store_id: str = "110") -> tuple[pd.DataFrame, bool, str, str | None]:
+def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date) -> tuple[pd.DataFrame, bool, str, str | None]:
     """
-    Executes targeted parameterized SQL query for 1 Store (Store 110) directly in SQL Server.
+    Executes parameterized SQL query for ALL stores directly in SQL Server.
     SQL Injection Safe via parameterized pyodbc placeholders.
     """
     is_connected, status_msg, driver, connection_diag_log = get_db_status()
@@ -100,7 +100,7 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
 
     if is_connected:
         sql = """
-        SELECT TOP 10000
+        SELECT TOP 50000
             CAST(MAGAZA AS VARCHAR(50)) AS STORE_NAME,
             CAST(MAGAZA AS VARCHAR(50)) AS STORE_ID,
             CAST(MAGAZA AS VARCHAR(50)) AS MAGAZA,
@@ -133,9 +133,8 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
             TARIX AS TARIX,
             12 AS HOUR
         FROM fnc_TS_SALES_REPORT_FOR_PLANNING_UNION(?, ?)
-        WHERE MAGAZA = ?
         """
-        df, err = execute_query(sql, params=(start_str, end_str, store_id))
+        df, err = execute_query(sql, params=(start_str, end_str))
         
         if err is None and not df.empty:
             df = standardize_dataframe_columns(df)
@@ -143,10 +142,10 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
             df["TARIX"] = pd.to_datetime(df["TARIX"])
             df["MARGIN_PCT"] = ((df["MARGIN"]) / df["GROSS_REVENUE"].replace(0, 1)) * 100
             df["TRANSACTION_ID"] = ["TRX-" + str(i) for i in range(100000, 100000 + len(df))]
-            return df, True, f"Connected to SQL Server. Loaded {len(df):,} targeted rows for Store {store_id}", None
+            return df, True, f"Connected to SQL Server. Loaded {len(df):,} rows across all stores", None
         elif err:
             sql_fallback = """
-            SELECT TOP 5000
+            SELECT TOP 50000
                 CAST(MAGAZA AS VARCHAR(50)) AS STORE_NAME,
                 CAST(MAGAZA AS VARCHAR(50)) AS STORE_ID,
                 CAST(MAGAZA AS VARCHAR(50)) AS MAGAZA,
@@ -191,12 +190,10 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
 
             diag = (connection_diag_log or "") + f"\nQuery Error: {err}"
             df_mock = generate_mock_sales_data(days=365)
-            df_mock = df_mock[df_mock["STORE_ID"] == "110"]
             df_mock = standardize_dataframe_columns(df_mock)
             return df_mock, False, "SQL Server query failed. Showing diagnostic log.", diag
 
     df_mock = generate_mock_sales_data(days=365)
-    df_mock = df_mock[df_mock["STORE_ID"] == "110"]
     df_mock = standardize_dataframe_columns(df_mock)
     return df_mock, False, status_msg, connection_diag_log
 
@@ -204,9 +201,9 @@ def fetch_sales_data_period(start_date: datetime.date, end_date: datetime.date, 
 @st.cache_data(ttl=600, show_spinner=False)
 def fetch_ty_and_ly_datasets(start_date: datetime.date, end_date: datetime.date) -> tuple[pd.DataFrame, pd.DataFrame, bool, str, str | None]:
     """
-    Fetches Current Period (TY) and Last Year Same Period (LY) datasets for Store 110.
+    Fetches Current Period (TY) and Last Year Same Period (LY) datasets for ALL Stores.
     """
-    df_ty, is_live, status_msg, diag_log = fetch_sales_data_period(start_date, end_date, store_id="110")
+    df_ty, is_live, status_msg, diag_log = fetch_sales_data_period(start_date, end_date)
     
     ly_start_date = start_date.replace(year=start_date.year - 1)
     try:
@@ -214,7 +211,7 @@ def fetch_ty_and_ly_datasets(start_date: datetime.date, end_date: datetime.date)
     except ValueError:
         ly_end_date = end_date.replace(year=end_date.year - 1, day=end_date.day - 1)
 
-    df_ly, _, _, _ = fetch_sales_data_period(ly_start_date, ly_end_date, store_id="110")
+    df_ly, _, _, _ = fetch_sales_data_period(ly_start_date, ly_end_date)
 
     return df_ty, df_ly, is_live, status_msg, diag_log
 

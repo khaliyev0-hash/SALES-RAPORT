@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Architecture (High-Specificity Global Dark Lock Stylesheet)
+High-Tech Cosmic Dark & Neon Glow Architecture (Clean Login Screen)
 """
 
 import sys
@@ -22,7 +22,6 @@ try:
     from frontend_components import (
         inject_global_theme_css,
         render_khayal_aliyev_branding_badge,
-        force_dark_theme_reset,
     )
     from js_components import (
         render_neon_kpi_cards,
@@ -59,7 +58,6 @@ st.set_page_config(
 )
 
 # Inject Global Theme & Zero-Leak Dark Glass Styling
-force_dark_theme_reset()
 inject_global_theme_css()
 
 # High-Specificity Cosmic Dark & Neon Glow CSS Overrides
@@ -206,38 +204,9 @@ st.markdown(
         color: #F8FAFC !important;
     }
 
-    [data-testid="stDataFrame"],
-    [data-testid="stDataFrame"] *,
-    .stDataFrame,
-    .stDataFrame * {
-        --gdg-bg-cell: #0B1120 !important;
-        --gdg-bg-cell-medium: #101726 !important;
-        --gdg-bg-header: #0F172A !important;
-        --gdg-bg-header-has-focus: #1E293B !important;
-        --gdg-bg-header-hovered: #1E293B !important;
-        --gdg-text-dark: #F8FAFC !important;
-        --gdg-text-medium: #CBD5E1 !important;
-        --gdg-text-light: #94A3B8 !important;
-        --gdg-text-header: #E2E8F0 !important;
-        --gdg-text-group-header: #CBD5E1 !important;
-        --gdg-bg-bubble: #1E293B !important;
-        --gdg-bg-bubble-selected: #0284C7 !important;
-        --gdg-border-color: rgba(0, 242, 254, 0.25) !important;
-        --gdg-horizontal-border-color: rgba(0, 242, 254, 0.15) !important;
-        --gdg-accent-color: #00F2FE !important;
-        --gdg-accent-fg: #070A13 !important;
-        --gdg-accent-light: rgba(0, 242, 254, 0.16) !important;
-    }
-
-    /* Datepicker and dropdown overlays are mounted in a BaseWeb layer.
-       Style the portal itself so newer Streamlit calendar markup cannot
-       fall back to its default white surface. */
-    div[data-baseweb="layer"],
-    div[data-baseweb="layer"] div,
-    div[data-baseweb="layer"] span,
-    div[data-baseweb="layer"] button,
+    /* Datepicker calendar container popup */
     div[data-baseweb="popover"],
-    div[data-baseweb="popover"] div,
+    div[data-baseweb="popover"] > div,
     div[data-baseweb="calendar"],
     div[data-baseweb="calendar"] * {
         background-color: #0F172A !important;
@@ -245,41 +214,22 @@ st.markdown(
         border-color: rgba(0, 242, 254, 0.25) !important;
     }
 
-    div[data-baseweb="layer"] svg,
-    div[data-baseweb="popover"] svg {
-        fill: #38BDF8 !important;
-        color: #38BDF8 !important;
-    }
-
-    div[data-baseweb="layer"] [role="presentation"],
     div[data-baseweb="calendar"] header,
     div[data-baseweb="calendar"] select {
         background-color: #1E293B !important;
         color: #00F2FE !important;
     }
 
-    div[data-baseweb="layer"] [role="gridcell"],
     div[data-baseweb="calendar"] [role="gridcell"] {
         background-color: #0F172A !important;
         color: #E2E8F0 !important;
     }
 
-    div[data-baseweb="layer"] [role="gridcell"]:hover {
-        background-color: rgba(0, 242, 254, 0.15) !important;
-        color: #00F2FE !important;
-    }
-
-    /* Selected / in-range day highlight */
-    div[data-baseweb="layer"] [aria-selected="true"],
     div[data-baseweb="calendar"] [aria-selected="true"] {
         background: linear-gradient(135deg, #0284C7, #00F2FE) !important;
         color: #070A13 !important;
         font-weight: 800 !important;
         border-radius: 6px !important;
-    }
-
-    div[data-baseweb="layer"] [aria-disabled="true"] {
-        color: #475569 !important;
     }
 
     /* Dropdown popup menus */
@@ -341,6 +291,62 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ==========================================
+# ENTERPRISE AUTHENTICATION ENGINE
+# ==========================================
+USER_CREDENTIALS = {
+    "i.ilkin": "test123",
+    "khayal.aliyev": "admin2026",
+    "admin": "tamstore2026"
+}
+
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
+
+if not st.session_state["authenticated"]:
+    # Hide sidebar during login screen
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"] { display: none !important; }
+        .block-container { max-width: 480px !important; padding-top: 5rem !important; }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-weight: 800; color: #FFFFFF; margin: 0; font-size: 1.5rem; letter-spacing: -0.5px;">
+                Tam Store Sales Analysis Portal
+            </h2>
+            <div style="font-size: 0.78rem; color: #38BDF8; font-weight: 700; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px;">
+                ENTERPRISE SECURITY & AUTHENTICATION
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    with st.form("login_form", clear_on_submit=False):
+        st.markdown("#### 🔐 Daxil Olun (Login)")
+        username_input = st.text_input("👤 İstifadəçi Adı (Username)", key="login_username").strip().lower()
+        password_input = st.text_input("🔑 Şifrə (Password)", type="password", key="login_password")
+        
+        submit_btn = st.form_submit_button("Daxil Ol (Login)", use_container_width=True)
+
+        if submit_btn:
+            if username_input in USER_CREDENTIALS and USER_CREDENTIALS[username_input] == password_input:
+                st.session_state["authenticated"] = True
+                st.session_state["current_user"] = username_input
+                st.success("✅ Uğurla daxil olundu!")
+                st.rerun()
+            else:
+                st.error("⚠️ Yanlış istifadəçi adı və ya şifrə!")
+
+    st.stop()
+
 def reset_all_sidebar_filters():
     for key in list(st.session_state.keys()):
         if key.startswith("sb_") or key.startswith("calendar_") or key == "uploaded_sku_list":
@@ -352,6 +358,22 @@ PLOTLY_CONFIG = {"displayModeBar": False, "responsive": True}
 # SIDEBAR: ADVANCED CALENDAR & BULK SKU UPLOADER
 # ==========================================
 with st.sidebar:
+    st.markdown(
+        f"""
+        <div style="background: rgba(0, 242, 254, 0.12); border: 1px solid rgba(0, 242, 254, 0.35); 
+                    padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.8rem; color: #00F2FE; font-weight: 700;">👤 {st.session_state.get('current_user', 'i.ilkin')}</span>
+            <span style="font-size: 0.7rem; color: #4ADE80; font-weight: 600;">● Online</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    if st.button("🚪 Çıxış Et (Logout)", use_container_width=True, key="btn_logout"):
+        st.session_state["authenticated"] = False
+        st.session_state["current_user"] = None
+        st.rerun()
+
+    st.markdown("---")
     st.markdown("### ⚡ Controls & Filters")
 
     if st.button("🔄 Reset All Filters", use_container_width=True, key="btn_sidebar_reset_top"):
@@ -400,10 +422,6 @@ with st.sidebar:
         default_start = today - datetime.timedelta(days=30)
         default_end = today
 
-    # Streamlit Cloud renders st.date_input with the browser's native calendar.
-    # That popup is controlled by the browser/OS and cannot be styled with the
-    # dashboard CSS, so use themed text fields and parse ISO dates ourselves.
-    # The selected dates still feed the same filtering logic below.
     preset_token = f"{date_preset}:{default_start.isoformat()}:{default_end.isoformat()}"
     if st.session_state.get("_calendar_preset_token") != preset_token:
         st.session_state["calendar_start_date"] = default_start.isoformat()
