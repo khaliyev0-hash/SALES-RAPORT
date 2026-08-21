@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Architecture (Calendar Popover, Select Popup, File Uploader, DataFrames & Inputs Fixes)
+High-Tech Cosmic Dark & Neon Glow Architecture (High-Specificity Global Dark Lock Stylesheet)
 """
 
 import sys
@@ -83,15 +83,16 @@ st.markdown(
     }
 
     /* =======================================================
-       FIX ALL WHITE INPUT BOXES IN SIDEBAR (SELECTBOX, DATE, MULTISELECT)
+       1. STRICT GLOBAL DARK LOCK FOR ALL SELECTBOXES & INPUTS (SIDEBAR & MAIN BODY)
        ======================================================= */
-    [data-testid="stSidebar"] div[data-baseweb="select"] > div,
-    [data-testid="stSidebar"] div[data-baseweb="input"],
-    [data-testid="stSidebar"] div[data-baseweb="input"] > input,
-    [data-testid="stSidebar"] .stSelectbox > div > div,
-    [data-testid="stSidebar"] .stMultiSelect > div > div,
-    [data-testid="stSidebar"] .stDateInput input,
-    [data-testid="stSidebar"] div[data-testid="stDateInput"] > div > div {
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="input"],
+    div[data-baseweb="input"] input,
+    div[data-baseweb="base-input"],
+    .stSelectbox > div > div,
+    .stMultiSelect > div > div,
+    .stTextInput input,
+    .stDateInput input {
         background-color: #101726 !important;
         background: #101726 !important;
         border: 1px solid rgba(0, 242, 254, 0.35) !important;
@@ -100,17 +101,13 @@ st.markdown(
         box-shadow: 0 0 10px rgba(0, 242, 254, 0.1) !important;
     }
 
-    [data-testid="stSidebar"] input,
-    [data-testid="stSidebar"] div[data-baseweb="select"] * {
+    div[data-baseweb="select"] *,
+    div[data-baseweb="input"] * {
         color: #F8FAFC !important;
         -webkit-text-fill-color: #F8FAFC !important;
     }
 
-    [data-testid="stSidebar"] div[data-baseweb="select"] span {
-        color: #94A3B8 !important;
-    }
-
-    [data-testid="stSidebar"] div[data-baseweb="select"] svg {
+    div[data-baseweb="select"] svg {
         fill: #00F2FE !important;
         color: #00F2FE !important;
     }
@@ -140,8 +137,74 @@ st.markdown(
     }
 
     /* =======================================================
-       1. FIX WHITE CALENDAR DIALOG / DATEPICKER POPOVER
+       2. PERMANENT BRIGHT CYAN GLOW ON ALL TABS (DESTROY RED HIGHLIGHT)
        ======================================================= */
+    div[data-testid="stTabs"] > div[role="tablist"],
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(0, 242, 254, 0.25) !important;
+        gap: 6px !important;
+    }
+
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
+    div[data-testid="stTabs"] [data-testid="stTabHighlight"],
+    div[data-baseweb="tab-highlight"] {
+        display: none !important;
+        opacity: 0 !important;
+        height: 0px !important;
+        background: transparent !important;
+    }
+
+    div[data-testid="stTabs"] button,
+    div[data-testid="stTabs"] button[role="tab"],
+    button[data-baseweb="tab"] {
+        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1px solid rgba(0, 242, 254, 0.3) !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 8px 16px !important;
+        margin-right: 4px !important;
+    }
+
+    div[data-testid="stTabs"] button *,
+    div[data-testid="stTabs"] button p,
+    div[data-testid="stTabs"] button span,
+    div[data-testid="stTabs"] button div,
+    button[data-baseweb="tab"] * {
+        color: #38BDF8 !important;
+        font-weight: 700 !important;
+        font-size: 13px !important;
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
+    }
+
+    div[data-testid="stTabs"] button[aria-selected="true"],
+    button[data-baseweb="tab"][aria-selected="true"] {
+        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
+        border: 1px solid #00F2FE !important;
+        border-bottom: 3px solid #00F2FE !important;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.5) !important;
+    }
+
+    div[data-testid="stTabs"] button[aria-selected="true"] * {
+        color: #FFFFFF !important;
+        text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
+    }
+
+    /* =======================================================
+       3. FIX ALL WHITE DATAFRAME & TABLE CONTAINERS
+       ======================================================= */
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"],
+    .stDataFrame,
+    div[data-testid="stDataFrame"] > div,
+    div[data-testid="stDataFrame"] canvas {
+        background-color: #0B1120 !important;
+        background: #0B1120 !important;
+        border: 1px solid rgba(0, 242, 254, 0.25) !important;
+        border-radius: 10px !important;
+        color: #F8FAFC !important;
+    }
+
+    /* Datepicker calendar container popup */
     div[data-baseweb="popover"],
     div[data-baseweb="popover"] > div,
     div[data-baseweb="calendar"],
@@ -169,9 +232,7 @@ st.markdown(
         border-radius: 6px !important;
     }
 
-    /* =======================================================
-       2. FIX WHITE SELECT / MULTISELECT POPUP MENUS
-       ======================================================= */
+    /* Dropdown popup menus */
     ul[data-baseweb="menu"],
     div[data-baseweb="popover"] ul {
         background-color: #0F172A !important;
@@ -192,50 +253,7 @@ st.markdown(
         color: #00F2FE !important;
     }
 
-    /* =======================================================
-       3. STRICT PERMANENT NEON GLOW ON ALL TAB LABELS
-       ======================================================= */
-    div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
-    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
-        display: none !important;
-        opacity: 0 !important;
-        height: 0px !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"] {
-        background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(0, 242, 254, 0.3) !important;
-        border-radius: 8px 8px 0 0 !important;
-        padding: 8px 16px !important;
-        margin-right: 4px !important;
-        transition: all 0.25s ease-in-out !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"] p,
-    div[data-testid="stTabs"] button[role="tab"] span,
-    div[data-testid="stTabs"] button[role="tab"] div,
-    div[data-testid="stTabs"] button[role="tab"] * {
-        color: #38BDF8 !important;
-        font-weight: 700 !important;
-        font-size: 13px !important;
-        text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
-        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
-        border: 1px solid #00F2FE !important;
-        border-bottom: 3px solid #00F2FE !important;
-        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
-    }
-
-    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
-        color: #FFFFFF !important;
-        text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
-    }
-
-    /* =======================================================
-       4. FIX FILE UPLOADER (DARK BLUE / NEON ACCENT)
-       ======================================================= */
+    /* File Uploader */
     [data-testid="stFileUploader"], 
     [data-testid="stFileUploader"] section, 
     [data-testid="stFileUploader"] > div,
@@ -251,33 +269,6 @@ st.markdown(
     [data-testid="stFileUploader"] small,
     [data-testid="stFileUploader"] span {
         color: #94A3B8 !important;
-    }
-
-    /* =======================================================
-       5. FIX ALL DATAFRAMES, TABLES & GLIDE GRID CONTAINERS
-       ======================================================= */
-    [data-testid="stDataFrame"],
-    [data-testid="stTable"],
-    .stDataFrame,
-    div[data-testid="stDataFrame"] > div {
-        background-color: #0B1120 !important;
-        background: #0B1120 !important;
-        border: 1px solid rgba(0, 242, 254, 0.25) !important;
-        border-radius: 10px !important;
-        color: #F8FAFC !important;
-    }
-
-    /* =======================================================
-       6. FIX MASTER SEARCH / TEXT INPUTS
-       ======================================================= */
-    div[data-baseweb="input"],
-    div[data-baseweb="input"] input,
-    .stTextInput input {
-        background-color: #101726 !important;
-        background: #101726 !important;
-        color: #F8FAFC !important;
-        border: 1px solid rgba(0, 242, 254, 0.35) !important;
-        border-radius: 8px !important;
     }
 
     /* Remove default Streamlit top header gap */
