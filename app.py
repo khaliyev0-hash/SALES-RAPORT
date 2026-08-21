@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Architecture (High-Specificity Sidebar & Tab Fixes)
+High-Tech Cosmic Dark & Neon Glow Architecture (Calendar Popover, Select Popup, File Uploader, DataFrames & Inputs Fixes)
 """
 
 import sys
@@ -83,7 +83,7 @@ st.markdown(
     }
 
     /* =======================================================
-       1. FIX ALL WHITE INPUT BOXES IN SIDEBAR (SELECTBOX, DATE, MULTISELECT)
+       FIX ALL WHITE INPUT BOXES IN SIDEBAR (SELECTBOX, DATE, MULTISELECT)
        ======================================================= */
     [data-testid="stSidebar"] div[data-baseweb="select"] > div,
     [data-testid="stSidebar"] div[data-baseweb="input"],
@@ -125,24 +125,7 @@ st.markdown(
         font-weight: 600 !important;
     }
 
-    /* Dropdown Popup Menus & List Items */
-    ul[data-baseweb="menu"], div[data-baseweb="popover"], div[role="listbox"] {
-        background-color: #0F172A !important;
-        border: 1px solid rgba(0, 242, 254, 0.3) !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
-    }
-
-    li[data-baseweb="menu-item"], div[role="option"] {
-        background-color: transparent !important;
-        color: #E2E8F0 !important;
-    }
-
-    li[data-baseweb="menu-item"]:hover, div[role="option"]:hover {
-        background-color: rgba(0, 242, 254, 0.15) !important;
-        color: #00F2FE !important;
-    }
-
-    /* Force all text in sidebar labels to High-Contrast Cyan/White */
+    /* Sidebar labels & Headings */
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] label p,
     [data-testid="stSidebar"] .stMarkdown p,
@@ -157,90 +140,147 @@ st.markdown(
     }
 
     /* =======================================================
-    /* =======================================================
-       2. BULLETPROOF STREAMLIT TAB FIX (v1.4x+ compatible)
+       1. FIX WHITE CALENDAR DIALOG / DATEPICKER POPOVER
        ======================================================= */
-
-    div[data-testid="stTabs"] div[role="tablist"] {
-        gap: 6px !important;
-        background: rgba(7,10,19,0.35) !important;
-        padding: 6px 8px !important;
-        border: 1px solid rgba(255,255,255,0.06) !important;
-        border-radius: 12px !important;
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    div[data-baseweb="calendar"],
+    div[data-baseweb="calendar"] * {
+        background-color: #0F172A !important;
+        color: #F8FAFC !important;
+        border-color: rgba(0, 242, 254, 0.25) !important;
     }
 
+    div[data-baseweb="calendar"] header,
+    div[data-baseweb="calendar"] select {
+        background-color: #1E293B !important;
+        color: #00F2FE !important;
+    }
+
+    div[data-baseweb="calendar"] [role="gridcell"] {
+        background-color: #0F172A !important;
+        color: #E2E8F0 !important;
+    }
+
+    div[data-baseweb="calendar"] [aria-selected="true"] {
+        background: linear-gradient(135deg, #0284C7, #00F2FE) !important;
+        color: #070A13 !important;
+        font-weight: 800 !important;
+        border-radius: 6px !important;
+    }
+
+    /* =======================================================
+       2. FIX WHITE SELECT / MULTISELECT POPUP MENUS
+       ======================================================= */
+    ul[data-baseweb="menu"],
+    div[data-baseweb="popover"] ul {
+        background-color: #0F172A !important;
+        border: 1px solid rgba(0, 242, 254, 0.35) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    li[data-baseweb="menu-item"],
+    div[role="option"] {
+        background-color: #0F172A !important;
+        color: #E2E8F0 !important;
+    }
+
+    li[data-baseweb="menu-item"]:hover,
+    div[role="option"]:hover,
+    li[data-baseweb="menu-item"][aria-selected="true"] {
+        background-color: rgba(0, 242, 254, 0.18) !important;
+        color: #00F2FE !important;
+    }
+
+    /* =======================================================
+       3. STRICT PERMANENT NEON GLOW ON ALL TAB LABELS
+       ======================================================= */
     div[data-testid="stTabs"] [data-baseweb="tab-highlight"],
-    div[data-testid="stTabs"] [data-testid="stTabHighlight"],
-    div[data-testid="stTabs"] [data-baseweb="tab-border"] {
+    div[data-testid="stTabs"] [data-testid="stTabHighlight"] {
         display: none !important;
         opacity: 0 !important;
-        height: 0 !important;
+        height: 0px !important;
     }
 
-    div[data-testid="stTabs"] [role="tab"],
-    div[data-testid="stTabs"] button[data-testid="stTab"],
-    div[data-testid="stTabs"] [data-testid="stTab"] {
-        background: rgba(15, 23, 42, 0.96) !important;
-        border: 1px solid rgba(148,163,184,0.28) !important;
-        border-radius: 9px !important;
-        padding: 10px 14px !important;
-        margin: 0 !important;
-        min-height: 42px !important;
-        opacity: 1 !important;
-        transition: all .2s ease !important;
+    div[data-testid="stTabs"] button[role="tab"] {
+        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1px solid rgba(0, 242, 254, 0.3) !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 8px 16px !important;
+        margin-right: 4px !important;
+        transition: all 0.25s ease-in-out !important;
     }
 
-    div[data-testid="stTabs"] [role="tab"],
-    div[data-testid="stTabs"] [role="tab"] *,
-    div[data-testid="stTabs"] button[data-testid="stTab"],
-    div[data-testid="stTabs"] button[data-testid="stTab"] *,
-    div[data-testid="stTabs"] [data-testid="stTab"],
-    div[data-testid="stTabs"] [data-testid="stTab"] * {
-        color: #E5F3FF !important;
-        -webkit-text-fill-color: #E5F3FF !important;
-        fill: #E5F3FF !important;
-        opacity: 1 !important;
+    div[data-testid="stTabs"] button[role="tab"] p,
+    div[data-testid="stTabs"] button[role="tab"] span,
+    div[data-testid="stTabs"] button[role="tab"] div,
+    div[data-testid="stTabs"] button[role="tab"] * {
+        color: #38BDF8 !important;
         font-weight: 700 !important;
         font-size: 13px !important;
-        text-shadow: 0 1px 8px rgba(56,189,248,.22) !important;
+        text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
     }
 
-    div[data-testid="stTabs"] [role="tab"]:hover,
-    div[data-testid="stTabs"] button[data-testid="stTab"]:hover,
-    div[data-testid="stTabs"] [data-testid="stTab"]:hover {
-        background: rgba(30,41,59,1) !important;
-        border-color: rgba(0,242,254,.65) !important;
-        box-shadow: 0 0 16px rgba(0,242,254,.18) !important;
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+        background: linear-gradient(180deg, rgba(0, 242, 254, 0.3), rgba(15, 23, 42, 0.95)) !important;
+        border: 1px solid #00F2FE !important;
+        border-bottom: 3px solid #00F2FE !important;
+        box-shadow: 0 0 18px rgba(0, 242, 254, 0.4) !important;
     }
 
-    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
-    div[data-testid="stTabs"] button[data-testid="stTab"][aria-selected="true"],
-    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] {
-        background: linear-gradient(180deg, rgba(0,242,254,.22), rgba(15,23,42,.98)) !important;
-        border-color: #22D3EE !important;
-        box-shadow: inset 0 0 0 1px rgba(34,211,238,.18), 0 0 18px rgba(34,211,238,.22) !important;
-    }
-
-    div[data-testid="stTabs"] [role="tab"][aria-selected="true"],
-    div[data-testid="stTabs"] [role="tab"][aria-selected="true"] *,
-    div[data-testid="stTabs"] button[data-testid="stTab"][aria-selected="true"],
-    div[data-testid="stTabs"] button[data-testid="stTab"][aria-selected="true"] *,
-    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"],
-    div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] * {
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] * {
         color: #FFFFFF !important;
-        -webkit-text-fill-color: #FFFFFF !important;
-        fill: #FFFFFF !important;
-        text-shadow: 0 0 10px rgba(34,211,238,.55) !important;
+        text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
     }
 
-    div[data-testid="stDataFrame"], div[data-testid="stTable"] {
+    /* =======================================================
+       4. FIX FILE UPLOADER (DARK BLUE / NEON ACCENT)
+       ======================================================= */
+    [data-testid="stFileUploader"], 
+    [data-testid="stFileUploader"] section, 
+    [data-testid="stFileUploader"] > div,
+    [data-testid="stFileUploaderDropzone"] {
+        background-color: #101726 !important;
+        background: #101726 !important;
+        border: 1px dashed rgba(0, 242, 254, 0.4) !important;
+        border-radius: 10px !important;
+        color: #F8FAFC !important;
+    }
+
+    [data-testid="stFileUploaderDropzoneInstructions"] div,
+    [data-testid="stFileUploader"] small,
+    [data-testid="stFileUploader"] span {
+        color: #94A3B8 !important;
+    }
+
+    /* =======================================================
+       5. FIX ALL DATAFRAMES, TABLES & GLIDE GRID CONTAINERS
+       ======================================================= */
+    [data-testid="stDataFrame"],
+    [data-testid="stTable"],
+    .stDataFrame,
+    div[data-testid="stDataFrame"] > div {
+        background-color: #0B1120 !important;
+        background: #0B1120 !important;
         border: 1px solid rgba(0, 242, 254, 0.25) !important;
-        border-radius: 12px !important;
-        background: rgba(15, 23, 42, 0.8) !important;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-        overflow: hidden !important;
+        border-radius: 10px !important;
+        color: #F8FAFC !important;
     }
 
+    /* =======================================================
+       6. FIX MASTER SEARCH / TEXT INPUTS
+       ======================================================= */
+    div[data-baseweb="input"],
+    div[data-baseweb="input"] input,
+    .stTextInput input {
+        background-color: #101726 !important;
+        background: #101726 !important;
+        color: #F8FAFC !important;
+        border: 1px solid rgba(0, 242, 254, 0.35) !important;
+        border-radius: 8px !important;
+    }
+
+    /* Remove default Streamlit top header gap */
     header[data-testid="stHeader"] {
         background: transparent !important;
         height: 0rem !important;
@@ -279,6 +319,7 @@ with st.sidebar:
 
     st.markdown("---")
 
+    # Date Selector Engine
     st.markdown("#### 📅 Calendar & Date Engine")
     
     date_preset = st.selectbox(
@@ -333,6 +374,7 @@ with st.sidebar:
 
     st.markdown("---")
 
+    # Bulk Product / SKU File Uploader
     st.markdown("#### 📁 Bulk SKU File Uploader")
     uploaded_file = st.file_uploader(
         "📁 Xüsusi Məhsul Siyahısı Yüklə (.xlsx, .csv, .txt)",
@@ -373,6 +415,7 @@ with st.sidebar:
 
     st.markdown("---")
 
+    # Fetch Datasets
     df_base_ty, df_base_ly, is_live_db, status_msg, diag_log = fetch_ty_and_ly_datasets(start_date, end_date)
 
     st.markdown("#### 🔍 Cascading Filters")
@@ -506,6 +549,7 @@ with tab1:
         days_count = max(1, (end_date - start_date).days + 1)
         avg_daily_sales = total_sales_ty / days_count
 
+        # 1. JavaScript Animated Neon KPI Ticker Row
         metrics_list = [
             {"title": "💰 Ümumi Satış (TY)", "value": total_sales_ty, "sub_text": "Cari Dövr Satışı", "accent_color": "#00f2fe", "suffix": " ₼"},
             {"title": "📦 Satış Miqdarı", "value": total_qty_ty, "sub_text": "Ümumi Ədəd", "accent_color": "#6366f1", "suffix": " əd"},
@@ -565,14 +609,14 @@ with tab1:
         with c_t1_left:
             df_t = df_filtered_ty.copy()
             df_t["DATE_ONLY"] = pd.to_datetime(df_t["SALES_DATE"]).dt.strftime("%d %b")
-            agg_ty = df_t.groupby("DATE_ONLY", sort=False)["GROSS_REVENUE"].sum().reset_index()
+            agg_ty = df_t.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
             dates_list = agg_ty["DATE_ONLY"].tolist()
             ty_list = agg_ty["GROSS_REVENUE"].tolist()
 
             if not df_filtered_ly.empty:
                 df_l = df_filtered_ly.copy()
                 df_l["DATE_ONLY"] = pd.to_datetime(df_l["SALES_DATE"]).dt.strftime("%d %b")
-                agg_ly = df_l.groupby("DATE_ONLY", sort=False)["GROSS_REVENUE"].sum().reset_index()
+                agg_ly = df_l.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
                 ly_list = agg_ly["GROSS_REVENUE"].tail(len(dates_list)).tolist()
             else:
                 ly_list = [v * 0.88 for v in ty_list]
@@ -598,7 +642,7 @@ with tab1:
         st.plotly_chart(fig_dow, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab1_dow_pattern")
 
 # ------------------------------------------
-# TAB 2: 🏬 MAĞAZA & REGİON ANALİZİ
+# TAB 2: 🏬 MAĞAZA & REGİON ANALİZİ (GLASSMORPHIC CARDS)
 # ------------------------------------------
 with tab2:
     if not df_filtered_ty.empty:
@@ -630,11 +674,12 @@ with tab2:
             agg_st = agg_st.sort_values("GROSS_REVENUE", ascending=False).reset_index(drop=True)
             agg_st.index += 1
 
+            # Render Custom Interactive Glassmorphic Table instead of raw Excel dataframe
             st_table_html = render_glassmorphic_store_ranking_table(agg_st)
             components.html(st_table_html, height=400, scrolling=False)
 
 # ------------------------------------------
-# TAB 3: 📦 KATEQORİYA, ABC & RISK RADAR
+# TAB 3: 📦 KATEQORİYA, ABC & RISK RADAR (GLASSMORPHIC CARDS)
 # ------------------------------------------
 with tab3:
     if not df_filtered_ty.empty:
@@ -661,7 +706,7 @@ with tab3:
         st.plotly_chart(fig_treemap, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab3_treemap")
 
 # ------------------------------------------
-# TAB SUPPLIER: 🏭 TƏCHİZATÇI & BREND ANALİZİ
+# TAB SUPPLIER: 🏭 TƏCHİZATÇI & BREND ANALİZİ (GLASSMORPHIC CARDS)
 # ------------------------------------------
 with tab_supplier:
     if not df_filtered_ty.empty:
@@ -821,7 +866,7 @@ with tab4:
         st.plotly_chart(fig_basket, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab4_basket_chart")
 
 # ------------------------------------------
-# TAB 5: 🟢 TOP / 🔴 BOTTOM RADAR
+# TAB 5: 🟢 TOP / 🔴 BOTTOM RADAR (APEX JS BARS)
 # ------------------------------------------
 with tab5:
     if not df_filtered_ty.empty:
