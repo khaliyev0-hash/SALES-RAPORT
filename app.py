@@ -400,17 +400,31 @@ with st.sidebar:
         default_start = today - datetime.timedelta(days=30)
         default_end = today
 
-    cal_range = st.date_input(
-        "Tarix Aralığı Seçin",
-        value=(default_start, default_end),
-        key="calendar_date_range"
-    )
+    # Streamlit Cloud renders st.date_input with the browser's native calendar.
+    # That popup is controlled by the browser/OS and cannot be styled with the
+    # dashboard CSS, so use themed text fields and parse ISO dates ourselves.
+    # The selected dates still feed the same filtering logic below.
+    preset_token = f"{date_preset}:{default_start.isoformat()}:{default_end.isoformat()}"
+    if st.session_state.get("_calendar_preset_token") != preset_token:
+        st.session_state["calendar_start_date"] = default_start.isoformat()
+        st.session_state["calendar_end_date"] = default_end.isoformat()
+        st.session_state["_calendar_preset_token"] = preset_token
 
-    if isinstance(cal_range, (tuple, list)) and len(cal_range) == 2:
-        start_date, end_date = cal_range[0], cal_range[1]
-    elif isinstance(cal_range, (tuple, list)) and len(cal_range) == 1:
-        start_date, end_date = cal_range[0], cal_range[0]
-    else:
+    st.caption("Tarix Aralığı Seçin · format: YYYY-MM-DD")
+    start_col, end_col = st.columns(2)
+    with start_col:
+        start_raw = st.text_input("Başlanğıc", key="calendar_start_date")
+    with end_col:
+        end_raw = st.text_input("Bitiş", key="calendar_end_date")
+
+    try:
+        start_date = datetime.date.fromisoformat(start_raw.strip())
+        end_date = datetime.date.fromisoformat(end_raw.strip())
+        if end_date < start_date:
+            st.warning("Bitiş tarixi başlanğıc tarixindən əvvəl ola bilməz.")
+            start_date, end_date = default_start, default_end
+    except (TypeError, ValueError):
+        st.warning("Tarixləri YYYY-MM-DD formatında daxil edin.")
         start_date, end_date = default_start, default_end
 
     st.markdown("---")
