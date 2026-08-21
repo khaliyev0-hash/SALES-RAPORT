@@ -30,6 +30,32 @@ def inject_global_theme_css():
         /* --- 1. Global Reset & Hard Lock --- */
         :root {
             color-scheme: dark !important;
+
+            /* --- Force native st.dataframe (glide-data-grid canvas) to dark theme ---
+               This widget renders on a <canvas> and reads its colors from these
+               CSS custom properties at mount time, NOT from element CSS below.
+               Without this (and/or .streamlit/config.toml theme=dark), the grid
+               stays white no matter how the wrapper div is styled. */
+            --gdg-bg-cell: #0B1120 !important;
+            --gdg-bg-cell-medium: #101726 !important;
+            --gdg-bg-header: #0F172A !important;
+            --gdg-bg-header-has-focus: #1E293B !important;
+            --gdg-bg-header-hovered: #1E293B !important;
+            --gdg-text-dark: #F8FAFC !important;
+            --gdg-text-medium: #CBD5E1 !important;
+            --gdg-text-light: #94A3B8 !important;
+            --gdg-text-bubble: #F8FAFC !important;
+            --gdg-bg-bubble: #1E293B !important;
+            --gdg-bg-bubble-selected: #0284C7 !important;
+            --gdg-text-bubble-selected: #FFFFFF !important;
+            --gdg-border-color: rgba(0, 242, 254, 0.25) !important;
+            --gdg-horizontal-border-color: rgba(0, 242, 254, 0.15) !important;
+            --gdg-drilldown-border: rgba(0, 242, 254, 0.4) !important;
+            --gdg-link-color: #00F2FE !important;
+            --gdg-accent-color: #00F2FE !important;
+            --gdg-accent-fg: #070A13 !important;
+            --gdg-accent-light: rgba(0, 242, 254, 0.16) !important;
+            --gdg-bg-search-result: rgba(0, 242, 254, 0.25) !important;
         }
 
         html, body, [data-testid="stAppViewContainer"], .stApp, [data-testid="stSidebar"], section[data-testid="stSidebar"] {
@@ -133,11 +159,26 @@ def inject_global_theme_css():
         div[data-testid="stTabs"] button p,
         div[data-testid="stTabs"] button span,
         div[data-testid="stTabs"] button div,
+        div[data-testid="stTabs"] button [data-testid="stMarkdownContainer"],
+        div[data-testid="stTabs"] button [data-testid="stMarkdownContainer"] p,
+        div[data-testid="stTabs"] [role="tab"] *,
+        div[data-testid="stTabs"] [data-baseweb="tab"] *,
         button[data-baseweb="tab"] * {
             color: #38BDF8 !important;
+            opacity: 1 !important;
+            -webkit-text-fill-color: #38BDF8 !important;
             font-weight: 700 !important;
             font-size: 13px !important;
             text-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
+        }
+
+        /* Belt-and-braces: some Streamlit builds render the tab label text
+           directly as a text node inside the button with no wrapping span,
+           so the rules above (which target descendants) can miss it. */
+        div[data-testid="stTabs"] button,
+        button[data-baseweb="tab"] {
+            color: #38BDF8 !important;
+            -webkit-text-fill-color: #38BDF8 !important;
         }
 
         div[data-testid="stTabs"] button[aria-selected="true"],
@@ -148,8 +189,10 @@ def inject_global_theme_css():
             box-shadow: 0 0 20px rgba(0, 242, 254, 0.5) !important;
         }
 
+        div[data-testid="stTabs"] button[aria-selected="true"],
         div[data-testid="stTabs"] button[aria-selected="true"] * {
             color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
             text-shadow: 0 0 12px rgba(0, 242, 254, 1) !important;
         }
 

@@ -2,14 +2,6 @@
 base = "dark"
 primaryColor = "#00F2FE"
 backgroundColor = "#070A13"
-secondaryBackgroundColor = "#0F172A"
+secondaryBackgroundColor = "#101726"
 textColor = "#F8FAFC"
-
-[client]
-toolbarMode = "minimal"
-
-[server]
-headless = true
-port = 8585
-enableCORS = false
-enableXsrfProtection = false
+font = "sans serif"
