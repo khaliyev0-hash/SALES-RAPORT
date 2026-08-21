@@ -82,19 +82,41 @@ def inject_global_theme_css():
         .stSelectbox > div > div,
         .stMultiSelect > div > div,
         .stTextInput input,
-        .stDateInput input {
+        .stDateInput input,
+        /* data-testid based selectors: current Streamlit builds have dropped
+           some legacy .stDateInput / .stTextInput wrapper classes, so the
+           rules above alone can silently stop matching after an upgrade. */
+        [data-testid="stDateInput"] input,
+        [data-testid="stDateInput"] div[data-baseweb="input"],
+        [data-testid="stDateInput"] div[data-baseweb="base-input"],
+        [data-testid="stTextInput"] input,
+        [data-testid="stSelectbox"] div[data-baseweb="select"] > div,
+        [data-testid="stMultiSelect"] div[data-baseweb="select"] > div,
+        [data-testid="stNumberInput"] input {
             background-color: #101726 !important;
             background: #101726 !important;
             border: 1px solid rgba(0, 242, 254, 0.35) !important;
             border-radius: 8px !important;
             color: #F8FAFC !important;
+            -webkit-text-fill-color: #F8FAFC !important;
             box-shadow: 0 0 10px rgba(0, 242, 254, 0.1) !important;
         }
 
         div[data-baseweb="select"] *,
-        div[data-baseweb="input"] * {
+        div[data-baseweb="input"] *,
+        [data-testid="stDateInput"] *,
+        [data-testid="stTextInput"] *,
+        [data-testid="stNumberInput"] * {
             color: #F8FAFC !important;
             -webkit-text-fill-color: #F8FAFC !important;
+        }
+
+        /* The date-range display text specifically (the "2026/07/22 - 2026/08/21"
+           readout) sits in a nested span/div that inherits from a baseweb
+           class not always caught above — force it explicitly. */
+        [data-testid="stDateInput"] input::placeholder {
+            color: #94A3B8 !important;
+            -webkit-text-fill-color: #94A3B8 !important;
         }
 
         div[data-baseweb="select"] svg {
