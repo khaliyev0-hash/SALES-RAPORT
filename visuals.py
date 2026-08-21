@@ -44,6 +44,101 @@ def apply_dark_theme(fig: go.Figure, height: int = 280, **kwargs) -> go.Figure:
     return fig
 
 
+def create_sales_trend_wave_chart(df_ty: pd.DataFrame, df_ly: pd.DataFrame) -> go.Figure:
+    """Tab 1: Smooth Neon Sales Wave (TY vs LY Sales Trend)."""
+    if df_ty.empty:
+        return go.Figure()
+
+    df_t = df_ty.copy()
+    df_t["DATE_DT"] = pd.to_datetime(df_t["SALES_DATE"])
+    agg_ty = df_t.groupby("DATE_DT")["GROSS_REVENUE"].sum().reset_index().sort_values("DATE_DT")
+
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=agg_ty["DATE_DT"],
+            y=agg_ty["GROSS_REVENUE"],
+            name="Cari Dövr (TY)",
+            mode="lines+markers",
+            line=dict(color="#00F2FE", width=3, shape="spline"),
+            marker=dict(size=5, color="#00F2FE", symbol="circle"),
+            fill="tozeroy",
+            fillcolor="rgba(0, 242, 254, 0.12)",
+            hovertemplate="<b>Tarix:</b> %{x|%d %b %Y}<br><b>Cari Satış:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
+        )
+    )
+
+    if not df_ly.empty:
+        df_l = df_ly.copy()
+        df_l["DATE_DT"] = pd.to_datetime(df_l["SALES_DATE"])
+        agg_ly = df_l.groupby("DATE_DT")["GROSS_REVENUE"].sum().reset_index().sort_values("DATE_DT")
+        
+        fig.add_trace(
+            go.Scatter(
+                x=agg_ty["DATE_DT"],
+                y=agg_ly["GROSS_REVENUE"].tail(len(agg_ty)),
+                name="Keçən İl (LY)",
+                mode="lines",
+                line=dict(color="#C084FC", width=2, dash="dash", shape="spline"),
+                hovertemplate="<b>Keçən İl Baza Satış:</b> <b>%{y:,.2f} ₼</b><extra></extra>"
+            )
+        )
+
+    apply_dark_theme(
+        fig,
+        height=280,
+        title=dict(text="<b>📈 Sales Trend Wave: Cari Dövr (TY) va Keçən İl (LY)</b>", font=dict(size=13, color="#00F2FE")),
+        showlegend=True,
+        legend=dict(orientation="h", x=0.65, y=1.1, font=dict(size=9))
+    )
+    return fig
+
+
+def create_store_share_donut_chart(df: pd.DataFrame) -> go.Figure:
+    """Tab 1: Hollow Neon Donut Chart for Store / Department Sales Distribution."""
+    if df.empty:
+        return go.Figure()
+
+    unique_stores = df["STORE_NAME"].nunique()
+    if unique_stores == 1:
+        agg = df.groupby("SUBCATEGORY_NAME")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(5)
+        cat_col = "SUBCATEGORY_NAME"
+        chart_title = "<b>🍩 Kateqoriya Satış Payı % (Top 5)</b>"
+    else:
+        agg = df.groupby("STORE_NAME")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(5)
+        cat_col = "STORE_NAME"
+        chart_title = "<b>🍩 Mağaza Satış Payı % (Top 5)</b>"
+
+    total_rev = agg["GROSS_REVENUE"].sum()
+
+    fig = go.Figure(
+        go.Pie(
+            labels=agg[cat_col],
+            values=agg["GROSS_REVENUE"],
+            hole=0.62,
+            marker=dict(colors=["#00F2FE", "#6366F1", "#10B981", "#F59E0B", "#F43F5E"]),
+            textinfo="percent",
+            textposition="inside",
+            hovertemplate="<b>%{label}:</b><br>Satış: <b>%{value:,.2f} ₼</b> (%{percent})<extra></extra>"
+        )
+    )
+
+    apply_dark_theme(
+        fig,
+        height=280,
+        title=dict(text=chart_title, font=dict(size=13, color="#00F2FE")),
+        annotations=[
+            dict(
+                text=f"<b>Top 5</b><br><span style='font-size:11px; color:#ffffff;'>{total_rev:,.0f} ₼</span>",
+                x=0.5, y=0.5, font_size=10, showarrow=False
+            )
+        ],
+        legend=dict(orientation="v", font=dict(size=8), y=0.5)
+    )
+    return fig
+
+
 def create_day_of_week_chart(df: pd.DataFrame) -> go.Figure:
     """Tab 1 Bottom: Day of Week Sales Pattern (Monday-Sunday peak analysis)."""
     if df.empty:

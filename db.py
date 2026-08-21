@@ -1,7 +1,7 @@
 """
 Database & Connection Management Module
 Handles dynamic ODBC driver detection, SQL Server connectivity for cltmdb03/Ltamstore,
-diagnostic logging, and high-fidelity fallback mock data generation.
+diagnostic logging, and high-fidelity fallback mock data generation across 30+ enterprise stores.
 """
 
 import sys
@@ -49,7 +49,7 @@ def detect_best_driver() -> str | None:
 
 
 def get_connection_string(driver_name: str) -> str:
-    """Constructs SQL Server connection string with 60s timeout and SSL trust."""
+    """Constructs optimized SQL Server connection string with 60s timeout, FastConnect, and SSL trust."""
     return (
         f"DRIVER={{{driver_name}}};"
         f"SERVER={DB_CONFIG['server']};"
@@ -58,6 +58,7 @@ def get_connection_string(driver_name: str) -> str:
         f"PWD={DB_CONFIG['password']};"
         "TrustServerCertificate=yes;"
         "Connection Timeout=60;"
+        "FastConnect=YES;"
     )
 
 
@@ -68,7 +69,7 @@ def test_db_connection() -> tuple[bool, str, str | None, str | None]:
     """
     driver = detect_best_driver()
     if not driver:
-        err = "No compatible SQL Server ODBC drivers found on system."
+        err = "No compatible SQL Server ODBC drivers found on system (Cloud Mode fallback active)."
         return False, err, None, err
 
     conn_str = get_connection_string(driver)
@@ -117,7 +118,7 @@ def execute_query(query_str: str, params: tuple = ()) -> tuple[pd.DataFrame, str
 @st.cache_data(ttl=300, show_spinner=False)
 def generate_mock_sales_data(days: int = 365) -> pd.DataFrame:
     """
-    Generates a realistic retail sales dataset matching the exact SQL Server schema:
+    Generates a realistic retail sales dataset matching the exact SQL Server schema across 30+ stores:
     MAGAZA, TARIX, MEHSUL_KODU, MEHSUL_ADI, MIQDARI, SATIS_EDV, SATIS_EDVSIZ,
     FAMILY CODE, FAMILY NAME, SUB FAMILY CODE, SUB FAMILY NAME, CATEGORY NAME, SUB CATEGORY NAME, SATICI ADI.
     """
@@ -127,14 +128,43 @@ def generate_mock_sales_data(days: int = 365) -> pd.DataFrame:
     dates = pd.date_range(start=start_date, end=end_date, freq="D")
 
     stores = [
-        {"STORE_ID": "110", "STORE_NAME": "110 - Baku Central Flagship", "REGION": "Baku"},
         {"STORE_ID": "101", "STORE_NAME": "101 - Ganjlik Retail Hub", "REGION": "Baku"},
+        {"STORE_ID": "102", "STORE_NAME": "102 - Nizami Street Flagship", "REGION": "Baku"},
+        {"STORE_ID": "103", "STORE_NAME": "103 - Fountain Square Express", "REGION": "Baku"},
         {"STORE_ID": "104", "STORE_NAME": "104 - 28 Mall Express", "REGION": "Baku"},
+        {"STORE_ID": "105", "STORE_NAME": "105 - Elmler Superstore", "REGION": "Baku"},
+        {"STORE_ID": "106", "STORE_NAME": "106 - Narimanov Avenue", "REGION": "Baku"},
+        {"STORE_ID": "107", "STORE_NAME": "107 - Khatai Business Hub", "REGION": "Baku"},
+        {"STORE_ID": "108", "STORE_NAME": "108 - Yashil Bazar Market", "REGION": "Baku"},
+        {"STORE_ID": "109", "STORE_NAME": "109 - Neftchiler Store", "REGION": "Baku"},
+        {"STORE_ID": "110", "STORE_NAME": "110 - Baku Central Flagship", "REGION": "Baku"},
+        {"STORE_ID": "111", "STORE_NAME": "111 - Akhundov Garden", "REGION": "Baku"},
+        {"STORE_ID": "112", "STORE_NAME": "112 - Inshaatcilar Metro", "REGION": "Baku"},
+        {"STORE_ID": "113", "STORE_NAME": "113 - Badamdar Heights", "REGION": "Baku"},
+        {"STORE_ID": "114", "STORE_NAME": "114 - Nasimi District Store", "REGION": "Baku"},
+        {"STORE_ID": "115", "STORE_NAME": "115 - Port Baku Mall", "REGION": "Baku"},
+        {"STORE_ID": "121", "STORE_NAME": "121 - Khirdalan Central", "REGION": "Absheron"},
         {"STORE_ID": "122", "STORE_NAME": "122 - Sumqayit City Store", "REGION": "Absheron"},
+        {"STORE_ID": "123", "STORE_NAME": "123 - Sumqayit 3rd Micro", "REGION": "Absheron"},
+        {"STORE_ID": "124", "STORE_NAME": "124 - Masazir Park", "REGION": "Absheron"},
+        {"STORE_ID": "126", "STORE_NAME": "126 - Mardakan Coastal", "REGION": "Absheron"},
+        {"STORE_ID": "131", "STORE_NAME": "131 - Ganja Central Plaza", "REGION": "Ganja"},
         {"STORE_ID": "132", "STORE_NAME": "132 - Ganja Boulevard Mega", "REGION": "Ganja"},
+        {"STORE_ID": "133", "STORE_NAME": "133 - Ganja Atatürk Ave", "REGION": "Ganja"},
+        {"STORE_ID": "135", "STORE_NAME": "135 - Shamkir Retail Hub", "REGION": "Western"},
+        {"STORE_ID": "137", "STORE_NAME": "137 - Tovuz Highway Market", "REGION": "Western"},
         {"STORE_ID": "141", "STORE_NAME": "141 - Mingachevir Park", "REGION": "Western"},
+        {"STORE_ID": "142", "STORE_NAME": "142 - Yevlakh Junction", "REGION": "Western"},
+        {"STORE_ID": "145", "STORE_NAME": "145 - Barda Central", "REGION": "Central"},
+        {"STORE_ID": "153", "STORE_NAME": "153 - Astara Border Store", "REGION": "Southern"},
         {"STORE_ID": "154", "STORE_NAME": "154 - Lankaran Coastal", "REGION": "Southern"},
+        {"STORE_ID": "160", "STORE_NAME": "160 - Masalli Market", "REGION": "Southern"},
+        {"STORE_ID": "175", "STORE_NAME": "175 - Sheki Heritage Store", "REGION": "Northern"},
+        {"STORE_ID": "179", "STORE_NAME": "179 - Gabala Mountain Mega", "REGION": "Northern"},
+        {"STORE_ID": "201", "STORE_NAME": "201 - Shirvan City Mall", "REGION": "Central"},
         {"STORE_ID": "211", "STORE_NAME": "211 - Quba Mountain Store", "REGION": "Northern"},
+        {"STORE_ID": "213", "STORE_NAME": "213 - Qusar Resort Store", "REGION": "Northern"},
+        {"STORE_ID": "1001", "STORE_NAME": "1001 - E-Commerce Fulfillment Hub", "REGION": "Digital"},
     ]
 
     categories = [
@@ -148,7 +178,7 @@ def generate_mock_sales_data(days: int = 365) -> pd.DataFrame:
         {"QRUP": "Qeyri-Qıda", "FAMILY": "Məişət", "CATEGORY": "Təmizlik", "SUBCATEGORY": "Yuyucu Vasitələr", "ITEMS": [("SKU-1022", "Surface Cleaner 1L"), ("SKU-1023", "Detergent Gel 2.5L"), ("SKU-1024", "Microfiber Cloth")]},
     ]
 
-    suppliers = ["Araz MMC", "Veysəloğlu", "Sun Food", "Alco Food", "Retail Distribution", "Procter & Gamble"]
+    suppliers = ["Araz MMC", "Veysəloğlu", "Sun Food", "Alco Food", "Retail Distribution", "Procter & Gamble", "Unilever Azerbaijan", "Coca-Cola Bottlers"]
 
     records = []
     trans_counter = 100000
@@ -158,7 +188,7 @@ def generate_mock_sales_data(days: int = 365) -> pd.DataFrame:
         daily_trans_mult = 1.3 if day_of_week in [5, 6] else 1.0
         
         for store in stores:
-            base_count = int(np.random.randint(12, 24) * daily_trans_mult)
+            base_count = int(np.random.randint(6, 15) * daily_trans_mult)
             for _ in range(base_count):
                 trans_counter += 1
                 cat_idx = trans_counter % len(categories)

@@ -1,7 +1,7 @@
 """
 Tam Store Sales Analysis Portal
 Architected & Engineered by Khayal Aliyev
-High-Tech Cosmic Dark & Neon Glow Architecture (Clean Login Screen)
+High-Tech Cosmic Dark & Neon Glow Architecture (Bulletproof Excel Export & Zero-Crash Type Coercion)
 """
 
 import sys
@@ -25,14 +25,14 @@ try:
     )
     from js_components import (
         render_neon_kpi_cards,
-        render_apex_sales_wave,
-        render_echarts_hollow_donut,
         render_apex_horizontal_bars,
         render_glassmorphic_store_ranking_table,
         render_glassmorphic_supplier_leadership_table,
         render_glassmorphic_risk_radar_table,
     )
     from visuals import (
+        create_sales_trend_wave_chart,
+        create_store_share_donut_chart,
         create_day_of_week_chart,
         create_store_ranking_chart,
         create_store_treemap,
@@ -290,6 +290,35 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+# Bulletproof Excel exporter helper to prevent openpyxl empty workbook IndexError
+def generate_excel_bytes(df: pd.DataFrame, sheet_name: str = "Report") -> bytes:
+    """Safely generates Excel file bytes using openpyxl with zero-crash type coercion and fallback protection."""
+    buffer = io.BytesIO()
+    if df is None or df.empty:
+        export_df = pd.DataFrame([{"Məlumat": "Cari seçilmiş filterlərə uyğun heç bir qeyd tapılmadı"}])
+    else:
+        export_df = df.copy()
+        # Coerce all datetime, date, and timestamp columns to safe string format YYYY-MM-DD
+        for col in list(export_df.columns):
+            if (
+                pd.api.types.is_datetime64_any_dtype(export_df[col])
+                or "DATE" in str(col).upper()
+                or "TARIX" in str(col).upper()
+            ):
+                export_df[col] = export_df[col].astype(str)
+
+    try:
+        with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+            export_df.to_excel(writer, index=False, sheet_name=sheet_name)
+        return buffer.getvalue()
+    except Exception:
+        # Ultimate fallback: convert all columns to string to guarantee openpyxl success
+        fallback_df = export_df.astype(str)
+        fallback_buffer = io.BytesIO()
+        with pd.ExcelWriter(fallback_buffer, engine="openpyxl") as writer:
+            fallback_df.to_excel(writer, index=False, sheet_name=sheet_name)
+        return fallback_buffer.getvalue()
 
 # ==========================================
 # ENTERPRISE AUTHENTICATION ENGINE
@@ -610,7 +639,7 @@ tab1, tab2, tab3, tab_supplier, tab_insert, tab4, tab5, tab6 = st.tabs([
 ])
 
 # ------------------------------------------
-# TAB 1: 📊 ƏSAS İCMAL, STORE CHAMPION & JS CHARTS
+# TAB 1: 📊 ƏSAS İCMAL, STORE CHAMPION & NATIVE PLOTLY CHARTS
 # ------------------------------------------
 with tab1:
     if not df_filtered_ty.empty:
@@ -678,37 +707,15 @@ with tab1:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
+        # 100% Reliable Native Plotly Charts for Tab 1
         c_t1_left, c_t1_right = st.columns([1.5, 1])
         with c_t1_left:
-            df_t = df_filtered_ty.copy()
-            df_t["DATE_ONLY"] = pd.to_datetime(df_t["SALES_DATE"]).dt.strftime("%d %b")
-            agg_ty = df_t.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
-            dates_list = agg_ty["DATE_ONLY"].tolist()
-            ty_list = agg_ty["GROSS_REVENUE"].tolist()
-
-            if not df_filtered_ly.empty:
-                df_l = df_filtered_ly.copy()
-                df_l["DATE_ONLY"] = pd.to_datetime(df_l["SALES_DATE"]).dt.strftime("%d %b")
-                agg_ly = df_l.groupby("DATE_ONLY")["GROSS_REVENUE"].sum().reset_index()
-                ly_list = agg_ly["GROSS_REVENUE"].tail(len(dates_list)).tolist()
-            else:
-                ly_list = [v * 0.88 for v in ty_list]
-
-            apex_wave_html = render_apex_sales_wave(dates_list, ty_list, ly_list)
-            components.html(apex_wave_html, height=270, scrolling=False)
+            fig_wave = create_sales_trend_wave_chart(df_filtered_ty, df_filtered_ly)
+            st.plotly_chart(fig_wave, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab1_sales_wave")
 
         with c_t1_right:
-            unique_stores = df_filtered_ty["STORE_NAME"].nunique()
-            if unique_stores == 1:
-                agg_donut = df_filtered_ty.groupby("SUBCATEGORY_NAME")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(5)
-                donut_cats = agg_donut["SUBCATEGORY_NAME"].tolist()
-            else:
-                agg_donut = df_filtered_ty.groupby("STORE_NAME")["GROSS_REVENUE"].sum().reset_index().sort_values("GROSS_REVENUE", ascending=False).head(5)
-                donut_cats = agg_donut["STORE_NAME"].tolist()
-            
-            donut_vals = agg_donut["GROSS_REVENUE"].tolist()
-            echarts_donut_html = render_echarts_hollow_donut(donut_cats, donut_vals)
-            components.html(echarts_donut_html, height=270, scrolling=False)
+            fig_donut = create_store_share_donut_chart(df_filtered_ty)
+            st.plotly_chart(fig_donut, use_container_width=True, config=PLOTLY_CONFIG, key="fig_tab1_store_donut")
 
         st.markdown("---")
         fig_dow = create_day_of_week_chart(df_filtered_ty)
@@ -824,13 +831,26 @@ with tab_supplier:
                 unsafe_allow_html=True
             )
 
+            # High-performance SKU aggregation to prevent MessageSizeError WebSocket bloat
+            agg_single_sup = df_single_sup.groupby(["MEHSUL_KODU", "MEHSUL_ADI", "CATEGORY NAME"]).agg(
+                QUANTITY=("QUANTITY", "sum"),
+                GROSS_REVENUE=("GROSS_REVENUE", "sum"),
+                MARGIN=("MARGIN", "sum"),
+                STORE_COUNT=("STORE_NAME", "nunique")
+            ).reset_index().sort_values("GROSS_REVENUE", ascending=False)
+
             st.dataframe(
-                df_single_sup[[
-                    "MEHSUL_KODU", "MEHSUL_ADI", "CATEGORY NAME", 
-                    "QUANTITY", "GROSS_REVENUE", "MARGIN", "STORE_NAME"
-                ]],
+                agg_single_sup.rename(columns={
+                    "MEHSUL_KODU": "Məhsul Kodu",
+                    "MEHSUL_ADI": "Məhsul Adı",
+                    "CATEGORY NAME": "Kateqoriya",
+                    "QUANTITY": "Satış Miqdarı (Ədəd)",
+                    "GROSS_REVENUE": "Ümumi Gəlir (AZN)",
+                    "MARGIN": "Mənfəət (AZN)",
+                    "STORE_COUNT": "Mağaza Sayı"
+                }),
                 use_container_width=True,
-                height=320
+                height=350
             )
 
 # ------------------------------------------
@@ -881,20 +901,29 @@ with tab_insert:
         insert_df = df_filtered_ty[df_filtered_ty["INSERT_MIQDARI"] > 0].copy()
         
         if not insert_df.empty:
+            agg_insert_df = insert_df.groupby(["MEHSUL_KODU", "MEHSUL_ADI", "FAMILY NAME", "CATEGORY NAME"]).agg(
+                INSERT_MIQDARI=("INSERT_MIQDARI", "sum"),
+                INSERT_SATIS_EDV=("INSERT_SATIS_EDV", "sum"),
+                INSERT_SATIS_EDVSIZ=("INSERT_SATIS_EDVSIZ", "sum"),
+                STORE_COUNT=("STORE_NAME", "nunique")
+            ).reset_index().sort_values("INSERT_SATIS_EDV", ascending=False)
+
             st.dataframe(
-                insert_df[[
-                    "MEHSUL_KODU", "MEHSUL_ADI", "FAMILY NAME", "CATEGORY NAME", 
-                    "INSERT_MIQDARI", "INSERT_SATIS_EDV", "INSERT_SATIS_EDVSIZ", "STORE_NAME", "SALES_DATE"
-                ]],
+                agg_insert_df.rename(columns={
+                    "MEHSUL_KODU": "Məhsul Kodu",
+                    "MEHSUL_ADI": "Məhsul Adı",
+                    "FAMILY NAME": "Ailə",
+                    "CATEGORY NAME": "Kateqoriya",
+                    "INSERT_MIQDARI": "İnser Miqdarı (Ədəd)",
+                    "INSERT_SATIS_EDV": "İnser Satışı (AZN)",
+                    "INSERT_SATIS_EDVSIZ": "İnser Maya (AZN)",
+                    "STORE_COUNT": "Mağaza Sayı"
+                }),
                 use_container_width=True,
                 height=350
             )
 
-            ins_excel_buffer = io.BytesIO()
-            with pd.ExcelWriter(ins_excel_buffer, engine="openpyxl") as writer:
-                insert_df.to_excel(writer, index=False, sheet_name="Insert Sales")
-            ins_excel_data = ins_excel_buffer.getvalue()
-
+            ins_excel_data = generate_excel_bytes(agg_insert_df, "Insert Sales")
             st.download_button(
                 label="📥 Export Insert Sales to Excel (.xlsx)",
                 data=ins_excel_data,
@@ -902,6 +931,8 @@ with tab_insert:
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 key="btn_insert_excel_dl"
             )
+        else:
+            st.info("Cari seçilmiş filterlərə uyğun inser məhsulu tapılmadı.")
 
 # ------------------------------------------
 # TAB 4: 🧾 SƏBƏT & ÇEK DİNAMİKASI
@@ -1010,12 +1041,27 @@ with tab6:
                 display_df["FAMILY NAME"].astype(str).str.contains(search_term, case=False)
             ]
 
+        agg_display_df = display_df.groupby(["MEHSUL_KODU", "MEHSUL_ADI", "FAMILY NAME", "CATEGORY NAME", "SATICI ADI"]).agg(
+            MIQDARI=("MIQDARI", "sum"),
+            SATIS_EDV=("SATIS_EDV", "sum"),
+            SATIS_EDVSIZ=("SATIS_EDVSIZ", "sum"),
+            MARGIN=("MARGIN", "sum"),
+            STORE_COUNT=("STORE_NAME", "nunique")
+        ).reset_index().sort_values("SATIS_EDV", ascending=False)
+
         st.dataframe(
-            display_df[[
-                "MEHSUL_KODU", "MEHSUL_ADI", "FAMILY NAME", 
-                "CATEGORY NAME", "SUB CATEGORY NAME", "SATICI ADI",
-                "MIQDARI", "SATIS_EDV", "SATIS_EDVSIZ", "MARGIN", "STORE_NAME", "SALES_DATE"
-            ]],
+            agg_display_df.rename(columns={
+                "MEHSUL_KODU": "Məhsul Kodu",
+                "MEHSUL_ADI": "Məhsul Adı",
+                "FAMILY NAME": "Ailə",
+                "CATEGORY NAME": "Kateqoriya",
+                "SATICI ADI": "Təchizatçı",
+                "MIQDARI": "Satış Miqdarı",
+                "SATIS_EDV": "Satış ƏDV (AZN)",
+                "SATIS_EDVSIZ": "Satış ƏDV-siz (AZN)",
+                "MARGIN": "Mənfəət (AZN)",
+                "STORE_COUNT": "Mağaza Sayı"
+            }),
             use_container_width=True,
             height=350
         )
@@ -1033,11 +1079,7 @@ with tab6:
             key="btn_tab6_csv_dl"
         )
 
-        excel_buffer = io.BytesIO()
-        with pd.ExcelWriter(excel_buffer, engine="openpyxl") as writer:
-            display_df.to_excel(writer, index=False, sheet_name="Sales Report")
-        excel_data = excel_buffer.getvalue()
-
+        excel_data = generate_excel_bytes(agg_display_df, "Sales Report")
         col_ex2.download_button(
             label="📥 Export Master Data to Excel (.xlsx)",
             data=excel_data,
