@@ -280,9 +280,15 @@ def inject_global_theme_css():
             color: #F8FAFC !important;
         }
 
-        /* Datepicker calendar container popup */
+        /* Datepicker and dropdown overlays are mounted in a BaseWeb layer.
+           Style the portal itself so newer Streamlit calendar markup cannot
+           fall back to its default white surface. */
+        div[data-baseweb="layer"],
+        div[data-baseweb="layer"] div,
+        div[data-baseweb="layer"] span,
+        div[data-baseweb="layer"] button,
         div[data-baseweb="popover"],
-        div[data-baseweb="popover"] > div,
+        div[data-baseweb="popover"] div,
         div[data-baseweb="calendar"],
         div[data-baseweb="calendar"] * {
             background-color: #0F172A !important;
@@ -290,22 +296,41 @@ def inject_global_theme_css():
             border-color: rgba(0, 242, 254, 0.25) !important;
         }
 
+        div[data-baseweb="layer"] svg,
+        div[data-baseweb="popover"] svg {
+            fill: #38BDF8 !important;
+            color: #38BDF8 !important;
+        }
+
+        div[data-baseweb="layer"] [role="presentation"],
         div[data-baseweb="calendar"] header,
         div[data-baseweb="calendar"] select {
             background-color: #1E293B !important;
             color: #00F2FE !important;
         }
 
+        div[data-baseweb="layer"] [role="gridcell"],
         div[data-baseweb="calendar"] [role="gridcell"] {
             background-color: #0F172A !important;
             color: #E2E8F0 !important;
         }
 
+        div[data-baseweb="layer"] [role="gridcell"]:hover {
+            background-color: rgba(0, 242, 254, 0.15) !important;
+            color: #00F2FE !important;
+        }
+
+        /* Selected / in-range day highlight */
+        div[data-baseweb="layer"] [aria-selected="true"],
         div[data-baseweb="calendar"] [aria-selected="true"] {
             background: linear-gradient(135deg, #0284C7, #00F2FE) !important;
             color: #070A13 !important;
             font-weight: 800 !important;
             border-radius: 6px !important;
+        }
+
+        div[data-baseweb="layer"] [aria-disabled="true"] {
+            color: #475569 !important;
         }
 
         /* Dropdown popup menus */
