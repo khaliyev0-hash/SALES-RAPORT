@@ -22,6 +22,7 @@ try:
     from frontend_components import (
         inject_global_theme_css,
         render_khayal_aliyev_branding_badge,
+        force_dark_theme_reset,
     )
     from js_components import (
         render_neon_kpi_cards,
@@ -58,6 +59,7 @@ st.set_page_config(
 )
 
 # Inject Global Theme & Zero-Leak Dark Glass Styling
+force_dark_theme_reset()
 inject_global_theme_css()
 
 # High-Specificity Cosmic Dark & Neon Glow CSS Overrides

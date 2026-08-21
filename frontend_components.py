@@ -20,6 +20,53 @@ def format_currency_azn(val: float) -> str:
         return f"{val:,.2f} ₼"
 
 
+def force_dark_theme_reset():
+    """
+    One-time, automatic 'self-heal' for browsers that already have a stale
+    'Light' theme choice saved in their own localStorage from before this
+    app enforced Dark. This runs for EVERY visitor automatically - nobody
+    has to open dev tools or change anything manually.
+
+    How it works: on first load in a given browser tab session, it wipes
+    any localStorage key related to the Streamlit theme choice and reloads
+    the page once. After that reload, since there's no more stored
+    override, the app falls back to the dark theme forced in
+    .streamlit/config.toml. A sessionStorage flag makes sure this only
+    runs once per browser tab (so it can't loop).
+
+    Call this once, near the very top of app.py, before any other
+    st.markdown/CSS injection.
+    """
+    st.markdown(
+        """
+        <script>
+        (function () {
+            try {
+                const FLAG = "__app_forced_dark_theme_v1";
+                if (window.sessionStorage.getItem(FLAG)) {
+                    return; // already handled this tab/session
+                }
+                let clearedSomething = false;
+                Object.keys(window.localStorage).forEach(function (k) {
+                    if (k.toLowerCase().indexOf("theme") !== -1) {
+                        window.localStorage.removeItem(k);
+                        clearedSomething = true;
+                    }
+                });
+                window.sessionStorage.setItem(FLAG, "1");
+                if (clearedSomething) {
+                    window.location.reload();
+                }
+            } catch (e) {
+                /* localStorage may be blocked (private mode, etc) - ignore */
+            }
+        })();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def inject_global_theme_css():
     """Injects high-priority Cyberpunk Dark Glass CSS stylesheet."""
     st.markdown(

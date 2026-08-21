@@ -5,3 +5,10 @@ backgroundColor = "#070A13"
 secondaryBackgroundColor = "#101726"
 textColor = "#F8FAFC"
 font = "sans serif"
+
+[client]
+# "minimal" hides the entire hamburger/Settings menu (including the
+# Light/Dark theme toggle) for every viewer. This is what stops anyone
+# (including future colleagues) from ever switching to Light again -
+# there's no menu item left to click.
+toolbarMode = "minimal"
