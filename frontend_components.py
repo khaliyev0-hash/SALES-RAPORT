@@ -280,6 +280,32 @@ def inject_global_theme_css():
             color: #F8FAFC !important;
         }
 
+        /* Streamlit can attach its light grid palette directly to the grid
+           container. Re-declare the tokens here (not just on :root) so the
+           table remains dark even when a browser has an older theme cached. */
+        [data-testid="stDataFrame"],
+        [data-testid="stDataFrame"] *,
+        .stDataFrame,
+        .stDataFrame * {
+            --gdg-bg-cell: #0B1120 !important;
+            --gdg-bg-cell-medium: #101726 !important;
+            --gdg-bg-header: #0F172A !important;
+            --gdg-bg-header-has-focus: #1E293B !important;
+            --gdg-bg-header-hovered: #1E293B !important;
+            --gdg-text-dark: #F8FAFC !important;
+            --gdg-text-medium: #CBD5E1 !important;
+            --gdg-text-light: #94A3B8 !important;
+            --gdg-text-header: #E2E8F0 !important;
+            --gdg-text-group-header: #CBD5E1 !important;
+            --gdg-bg-bubble: #1E293B !important;
+            --gdg-bg-bubble-selected: #0284C7 !important;
+            --gdg-border-color: rgba(0, 242, 254, 0.25) !important;
+            --gdg-horizontal-border-color: rgba(0, 242, 254, 0.15) !important;
+            --gdg-accent-color: #00F2FE !important;
+            --gdg-accent-fg: #070A13 !important;
+            --gdg-accent-light: rgba(0, 242, 254, 0.16) !important;
+        }
+
         /* Datepicker and dropdown overlays are mounted in a BaseWeb layer.
            Style the portal itself so newer Streamlit calendar markup cannot
            fall back to its default white surface. */
